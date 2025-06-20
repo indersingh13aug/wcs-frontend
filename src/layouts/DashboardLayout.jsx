@@ -57,6 +57,15 @@ const DashboardLayout = () => {
           >
             Payroll
           </NavLink>
+          <NavLink
+            to="/leave"
+            className={({ isActive }) =>
+              `hover:text-blue-600 ${isActive ? 'text-blue-700 font-semibold' : 'text-gray-800'
+              }`
+            }
+          >
+            Leave
+          </NavLink>
 
 
           {role === 2 && (
