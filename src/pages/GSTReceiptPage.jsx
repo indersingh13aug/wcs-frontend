@@ -55,14 +55,14 @@ function GSTReceiptPage() {
 
   useEffect(() => {
     // Fetch list of invoices
-    axios.get('http://localhost:8000/api/invoices')
+    axios.get('/api/invoices')
       .then(res => setInvoices(res.data))
       .catch(err => console.error("Failed to load invoices:", err));
   }, []);
 
   const handleSearch = () => {
     if (selectedId) {
-      axios.get(`http://localhost:8000/api/generate-receipt/${selectedId}`, {
+      axios.get(`/api/generate-receipt/${selectedId}`, {
         responseType: 'blob'
       }).then(res => {
         const fileURL = URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
