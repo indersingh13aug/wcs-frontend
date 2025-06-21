@@ -87,13 +87,13 @@ const DashboardLayout = () => {
           {role === 1 && (
             <>
               <NavLink
-                to="/department"
+                to="/departments"
                 className={({ isActive }) =>
                   `hover:text-blue-600 ${isActive ? 'text-blue-700 font-semibold' : 'text-gray-800'
                   }`
                 }
               >
-                Department
+                Departments
               </NavLink>
               <NavLink
                 to="/clients"
@@ -125,7 +125,7 @@ const DashboardLayout = () => {
       <div className="flex-1 flex flex-col">
         {/* Header */}
         <header className="bg-white border-b px-6 py-4 flex justify-between items-center shadow-sm">
-          <h1 className="text-lg font-semibold">HR Management Dashboard</h1>
+          <h1 className="text-lg font-semibold">WCA Enterprise Resource Planning</h1>
           <button
             onClick={handleLogout}
             className="text-sm bg-red-100 text-red-600 px-3 py-1 rounded hover:bg-red-200"

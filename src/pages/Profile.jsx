@@ -11,7 +11,7 @@ const Profile = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const { user } = useAuth();
-  console.log("Logged-in user from context:", user);
+  // console.log("Logged-in user from context:", user);
   const employeeId = user?.employee?.id;
   console.log("Employee ID:", employeeId);
   useEffect(() => {
