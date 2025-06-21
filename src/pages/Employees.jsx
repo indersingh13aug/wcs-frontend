@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../services/axios';
-import EmployeeForm from '../components/Employees/EmployeeForm';
+import EmployeeForm from '../components/Forms/EmployeeForm';
 
 const Employees = () => {
   const [employees, setEmployees] = useState([]);

@@ -8,6 +8,8 @@ import Profile from './pages/Profile';
 import Departments from './pages/Departments';
 import Clients from './pages/Clients';
 import Leaves from './pages/Leaves';
+import Project from './pages/Project';
+import Role from './pages/Role';
 import GSTReceiptPage from './pages/GSTReceiptPage';
 import { Navigate } from 'react-router-dom';
 
@@ -27,6 +29,8 @@ function App() {
         <Route path="profile" element={<Profile />} />
         <Route path="departments" element={<Departments />} />
         <Route path="clients" element={<Clients />} />
+        <Route path="project" element={<Project />} />
+        <Route path="role" element={<Role />} />
         {/* <Route path="gstreceipt/:invoiceId" element={<GSTReceiptPage />} /> */}
         {/* <Route path="gstreceipt" element={<Navigate to="/gstreceipt/1" replace />} />
         <Route path="gstreceipt/:invoiceId" element={<GSTReceiptPage />} /> */}

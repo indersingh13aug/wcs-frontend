@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../services/axios';
-import LeaveForm from '../components/LeaveForm';
+import LeaveForm from '../components/Forms/LeaveForm';
 import { useAuth } from '../context/AuthContext';
 
 const Leaves = () => {

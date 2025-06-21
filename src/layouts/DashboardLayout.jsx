@@ -104,6 +104,24 @@ const DashboardLayout = () => {
               >
                 Clients
               </NavLink>
+              <NavLink
+                to="/role"
+                className={({ isActive }) =>
+                  `hover:text-blue-600 ${isActive ? 'text-blue-700 font-semibold' : 'text-gray-800'
+                  }`
+                }
+              >
+                Role
+              </NavLink>
+               <NavLink
+                to="/project"
+                className={({ isActive }) =>
+                  `hover:text-blue-600 ${isActive ? 'text-blue-700 font-semibold' : 'text-gray-800'
+                  }`
+                }
+              >
+                Project
+              </NavLink>
               {/* <Link to="/department" className="hover:text-blue-600">Department</Link> */}
               {/* <Link to="/department/create" className="pl-4 text-sm text-gray-600">➕ Add Department</Link> */}
               {/* <Link to="/gstreceipt" className="hover:text-blue-600">GST Invoice</Link> */}

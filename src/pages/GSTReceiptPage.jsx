@@ -1,52 +1,5 @@
-// // const invoiceId = paramId || 1; // Default to invoice 1
-
-// import { useEffect, useState } from 'react';
-// import axios from 'axios';
-// import { useParams } from 'react-router-dom';
-
-// function GSTReceipt() {
-//   const { invoiceId } = useParams();
-//   const [pdfUrl, setPdfUrl] = useState(null);
-
-//   useEffect(() => {
-//     if (invoiceId) {
-//       axios
-//         .get(`http://localhost:8000/generate-receipt/${invoiceId}`, {
-//           responseType: 'blob', // 👈 required
-//         })
-//         .then((res) => {
-//           const fileURL = URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
-//           setPdfUrl(fileURL);
-//         })
-//         .catch((err) => {
-//           console.error('Error loading PDF:', err);
-//         });
-//     }
-//   }, [invoiceId]);
-
-//   return (
-//     <div className="p-6">
-//       <h1 className="text-xl font-bold mb-4">GST Receipt</h1>
-//       {pdfUrl ? (
-//         <iframe
-//           src={pdfUrl}
-//           width="100%"
-//           height="600px"
-//           title="GST PDF"
-//           style={{ border: '1px solid #ccc' }}
-//         />
-//       ) : (
-//         <p>Loading receipt...</p>
-//       )}
-//     </div>
-//   );
-// }
-
-// export default GSTReceipt;
-
-
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../services/axios';
 
 function GSTReceiptPage() {
   const [invoices, setInvoices] = useState([]);
