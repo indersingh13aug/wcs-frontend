@@ -12,7 +12,7 @@ const Leaves = () => {
 
   const fetchLeaves = async () => {
     try {
-      const res = await axios.get(`/api/leaves?employee_id=${employeeId}`);
+      const res = await axios.get(`/leaves?employee_id=${employeeId}`);
       setLeaves(res.data);
     } catch (err) {
       console.error('Error fetching leaves', err);
@@ -25,7 +25,7 @@ const Leaves = () => {
 
   const handleLeaveSubmit = async (formData) => {
     try {
-      await axios.post('/api/leaves', { ...formData, employee_id: employeeId });
+      await axios.post('/leaves', { ...formData, employee_id: employeeId });
       setShowForm(false);
       fetchLeaves();
     } catch (err) {
@@ -54,6 +54,7 @@ const Leaves = () => {
       <table className="w-full bg-white rounded shadow overflow-hidden">
         <thead className="bg-gray-100">
           <tr>
+            <th className="px-4 py-2 text-left">Leave Type</th>
             <th className="px-4 py-2 text-left">From</th>
             <th className="px-4 py-2 text-left">To</th>
             <th className="px-4 py-2 text-left">Reason</th>
@@ -63,9 +64,11 @@ const Leaves = () => {
         <tbody>
           {leaves.map((leave) => (
             <tr key={leave.id} className="border-t">
+              <td className="px-4 py-2">{leave.type}</td>
               <td className="px-4 py-2">{leave.start_date}</td>
               <td className="px-4 py-2">{leave.end_date}</td>
               <td className="px-4 py-2">{leave.reason}</td>
+              
               <td className="px-4 py-2">
                 <span
                   className={`px-2 py-1 rounded text-sm ${

@@ -12,7 +12,7 @@ const Clients = () => {
 
   const fetchClients = async () => {
     try {
-      const res = await axios.get('/api/clients');
+      const res = await axios.get('/clients');
       setClients(res.data);
     } catch (err) {
       console.error('Failed to load clients', err);
@@ -30,9 +30,9 @@ const Clients = () => {
   const handleSubmit = async () => {
     try {
       if (editingId) {
-        await axios.put(`/api/clients/${editingId}`, form);
+        await axios.put(`/clients/${editingId}`, form);
       } else {
-        await axios.post('/api/clients', form);
+        await axios.post('/clients', form);
       }
       setForm({ name: '', contact_email: '', contact_person: '' });
       setEditingId(null);
@@ -55,7 +55,7 @@ const Clients = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Soft delete this client?')) return;
     try {
-      await axios.delete(`/api/clients/${id}`);
+      await axios.delete(`/clients/${id}`);
       fetchClients();
     } catch (err) {
       console.error('Delete failed:', err);

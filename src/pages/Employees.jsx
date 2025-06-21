@@ -12,7 +12,7 @@ const Employees = () => {
   const fetchEmployees = async (pageNum = 1) => {
     const skip = (pageNum - 1) * pageSize;
     try {
-      const res = await axios.get(`/api/employees?skip=${skip}&limit=${pageSize}`);
+      const res = await axios.get(`/employees?skip=${skip}&limit=${pageSize}`);
       setEmployees(res.data);
       setHasMore(res.data.length === pageSize); // ✅ If less than 10, it's the last page
     } catch (err) {
@@ -27,7 +27,7 @@ const Employees = () => {
 
   const handleAddEmployee = async (formData) => {
     try {
-      await axios.post('/api/employees', formData);
+      await axios.post('/employees', formData);
       setShowForm(false);
       fetchEmployees(page);
     } catch (err) {

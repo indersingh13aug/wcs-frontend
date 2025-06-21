@@ -23,8 +23,8 @@ const EmployeeForm = ({ onSubmit, employee = null }) => {
   useEffect(() => {
   const fetchMetaData = async () => {
     try {
-      const deptRes = await axios.get('/api/departments');
-      const roleRes = await axios.get('/api/roles');
+      const deptRes = await axios.get('/departments');
+      const roleRes = await axios.get('/roles');
       setDepartments(deptRes.data);
       setRoles(roleRes.data);
     } catch (err) {

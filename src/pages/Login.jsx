@@ -19,7 +19,7 @@ const Login = () => {
     try {
       console.log('password',password);
       console.log('username',username);
-      const response = await axios.post('/auth/login', { username, password });
+      const response = await axios.post('/login', { username, password });
       
       login(response.data);
       const user = response.data.user;

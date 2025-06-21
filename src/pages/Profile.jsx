@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../services/axios';
 import { useAuth } from '../context/AuthContext';
 
 const Profile = () => {
@@ -18,7 +18,7 @@ const Profile = () => {
     const fetchProfile = async () => {
       if (!employeeId) return; // wait until employeeId is available
       try {
-        const res = await axios.get(`/api/employees/${employeeId}`);
+        const res = await axios.get(`/employees/${employeeId}`);
         setProfile(res.data);
         // alert(res.data);
       } catch (err) {
@@ -38,7 +38,7 @@ const Profile = () => {
 
   const handleUpdate = async () => {
     try {
-      await axios.put(`/api/employees/${employeeId}`, profile);
+      await axios.put(`/employees/${employeeId}`, profile);
       alert('Profile updated');
       setEditing(false);
     } catch (err) {
@@ -52,7 +52,7 @@ const Profile = () => {
       return alert('Passwords do not match');
     }
     try {
-      await axios.post(`/api/employees/${employeeId}/change-password`, passwords);
+      await axios.post(`/employees/${employeeId}/change-password`, passwords);
       alert('Password updated');
       setPasswords({ current: '', new: '', confirm: '' });
     } catch (err) {
@@ -72,7 +72,7 @@ const Profile = () => {
     const formData = new FormData();
     formData.append('image', imageFile);
     try {
-      await axios.post(`/api/employees/${employeeId}/upload-image`, formData);
+      await axios.post(`/employees/${employeeId}/upload-image`, formData);
       alert('Image uploaded');
     } catch (err) {
       console.error(err);

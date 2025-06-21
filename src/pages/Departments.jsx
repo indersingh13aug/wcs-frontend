@@ -10,7 +10,7 @@ const Departments = () => {
 
   const fetchDepartments = async () => {
     try {
-      const res = await axios.get('/api/departments');
+      const res = await axios.get('/departments');
       setDepartments(res.data);
     } catch (err) {
       console.error('Failed to load departments', err);
@@ -28,9 +28,9 @@ const Departments = () => {
   const handleSubmit = async () => {
     try {
       if (editingId) {
-        await axios.put(`/api/departments/${editingId}`, form);
+        await axios.put(`/departments/${editingId}`, form);
       } else {
-        await axios.post('/api/departments', form);
+        await axios.post('/departments', form);
       }
       setForm({ name: '', description: '' });
       setEditingId(null);
@@ -49,7 +49,7 @@ const Departments = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Soft delete this department?')) return;
     try {
-      await axios.delete(`/api/departments/${id}`);
+      await axios.delete(`/departments/${id}`);
       fetchDepartments();
     } catch (err) {
       console.error('Delete failed:', err);
