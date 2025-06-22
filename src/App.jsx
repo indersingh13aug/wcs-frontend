@@ -11,10 +11,10 @@ import Leaves from './pages/Leaves';
 import Project from './pages/Project';
 import Role from './pages/Role';
 import User from './pages/User';
-import GSTReceiptPage from './pages/GSTReceiptPage';
+import GSTInvoicePage from './pages/GSTInvoicePage';
 import Unauthorized from './pages/Unauthorized'; // ❗️ Add this page
 import ProtectedRoute from './components/ProtectedRoute';
-
+import GSTItems from './pages/GSTItems';
 function App() {
   return (
     <Routes>
@@ -99,10 +99,18 @@ function App() {
           }
         />
         <Route
-          path="gstreceipt"
+          path="gstinvoice"
           element={
             <ProtectedRoute roles={[1]}>
-              <GSTReceiptPage />
+              <GSTInvoicePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="gstitems"
+          element={
+            <ProtectedRoute roles={[1]}>
+              <GSTItems />
             </ProtectedRoute>
           }
         />

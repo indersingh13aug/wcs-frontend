@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from '../services/axios';
 
-function GSTReceiptPage() {
+function GSTInvoicePage() {
   const [invoices, setInvoices] = useState([]);
   const [selectedId, setSelectedId] = useState('');
   const [pdfUrl, setPdfUrl] = useState(null);
@@ -39,7 +39,7 @@ function GSTReceiptPage() {
           <option value="">-- Select Receipt --</option>
           {invoices.map(invoice => (
             <option key={invoice.id} value={invoice.id}>
-              {invoice.invoice_number} - {invoice.client_name}
+              {invoice.invoice_number} - {invoice.client_id} - {invoice.item_id} - {invoice.billing_date}
             </option>
           ))}
         </select>
@@ -66,4 +66,4 @@ function GSTReceiptPage() {
   );
 }
 
-export default GSTReceiptPage;
+export default GSTInvoicePage;

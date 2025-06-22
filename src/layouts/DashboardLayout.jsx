@@ -68,6 +68,7 @@ const DashboardLayout = () => {
                   {menuLink('/project', 'Project')}
                   {menuLink('/user', 'User')}
                   {menuLink('/leave', 'Leave')}
+                  {menuLink('/gstitems', 'GST Items')}
                 </div>
               )}
             </div>
@@ -117,7 +118,7 @@ const DashboardLayout = () => {
             </button>
             {openMenus.gst && (
               <div className="ml-2 flex flex-col">
-                {menuLink('/gstreceipt', 'GST Invoice')}
+                {menuLink('/gstinvoice', 'GST Invoice')}
               </div>
             )}
           </div>
