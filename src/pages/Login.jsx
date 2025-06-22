@@ -23,6 +23,8 @@ const Login = () => {
       
       login(response.data);
       const user = response.data.user;
+
+      console.log('user',user);
       if (user?.role === 'admin' || user?.role === 'hr') {
         navigate('/dashboard');
       } else if (user?.role === 'employee') {

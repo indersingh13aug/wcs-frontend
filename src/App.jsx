@@ -10,34 +10,82 @@ import Clients from './pages/Clients';
 import Leaves from './pages/Leaves';
 import Project from './pages/Project';
 import Role from './pages/Role';
+import User from './pages/User';
 import GSTReceiptPage from './pages/GSTReceiptPage';
-import { Navigate } from 'react-router-dom';
-
+import ProtectedRoute from './components/ProtectedRoute';
+import Unauthorized from './pages/Unauthorized'; // ❗ You need this
 
 function App() {
   return (
     <Routes>
-      {/* Public route */}
       <Route path="/" element={<Login />} />
 
-      {/* Protected routes inside dashboard layout */}
       <Route path="/" element={<DashboardLayout />}>
         <Route path="dashboard" element={<Dashboard />} />
-        <Route path="employees" element={<Employees />} />
-        <Route path="leave" element={<Leaves />} />
-        <Route path="payroll" element={<Payroll />} />
         <Route path="profile" element={<Profile />} />
-        <Route path="departments" element={<Departments />} />
-        <Route path="clients" element={<Clients />} />
-        <Route path="project" element={<Project />} />
-        <Route path="role" element={<Role />} />
-        {/* <Route path="gstreceipt/:invoiceId" element={<GSTReceiptPage />} /> */}
-        {/* <Route path="gstreceipt" element={<Navigate to="/gstreceipt/1" replace />} />
-        <Route path="gstreceipt/:invoiceId" element={<GSTReceiptPage />} /> */}
-        <Route path="gstreceipt" element={<GSTReceiptPage />} />
+        <Route path="payroll" element={<Payroll />} />
+        <Route path="leave" element={<Leaves />} />
 
+        {/* Protected routes */}
+        <Route
+          path="departments"
+          element={
+            <ProtectedRoute roles={[1]}>
+              <Departments />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="clients"
+          element={
+            <ProtectedRoute roles={[1]}>
+              <Clients />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="role"
+          element={
+            <ProtectedRoute roles={[1]}>
+              <Role />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="project"
+          element={
+            <ProtectedRoute roles={[1]}>
+              <Project />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="user"
+          element={
+            <ProtectedRoute roles={[1]}>
+              <User />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="employees"
+          element={
+            <ProtectedRoute roles={[2]}>
+              <Employees />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="gstreceipt"
+          element={
+            <ProtectedRoute roles={[1]}>
+              <GSTReceiptPage />
+            </ProtectedRoute>
+          }
+        />
 
-
+        {/* Unauthorized route */}
+        <Route path="unauthorized" element={<Unauthorized />} />
       </Route>
     </Routes>
   );

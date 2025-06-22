@@ -59,22 +59,22 @@ const Project = () => {
     try {
       if (editingProject) {
         await axios.put(`/projects/${editingProject.id}`, payload);
-        Swal.fire("Updated!", "Project updated successfully", "success");
+        Swal.fire({icon: 'success',title: 'Updated!',text: 'Project updated successfully.',});
       } else {
         await axios.post("/projects", payload);
-        Swal.fire("Created!", "Project added successfully", "success");
+         Swal.fire({icon: 'success',title: 'Created',text: 'Project added successfully.',});
       }
       fetchProjects();
       setShowForm(false);
     } catch (err) {
       const msg = err.response?.data?.detail || "Save failed.";
-      Swal.fire("Error", msg, "error");
+      Swal.fire({icon: 'error',title: 'Error',text: msg,});
     }
   };
 
   const handleActivate = async (id) => {
     await axios.put(`/projects/${id}/activate`);
-    Swal.fire("Activated!", "Project is now active.", "success");
+    Swal.fire({icon: 'success',title: 'Activated!',text: "Project is now active.",});
     fetchProjects();
   };
 
@@ -89,7 +89,7 @@ const Project = () => {
 
     if (confirm.isConfirmed) {
       await axios.put(`/projects/${id}/deactivate`);
-      Swal.fire("Deactivated!", "Project has been deactivated.", "success");
+      Swal.fire({icon: 'success',title: 'Deactivated!',text: "Project has been deactivated.",});
       fetchProjects();
     }
   };

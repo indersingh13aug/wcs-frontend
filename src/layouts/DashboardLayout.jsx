@@ -6,7 +6,7 @@ import { NavLink } from 'react-router-dom'; // ✅ replace Link with NavLink
 const DashboardLayout = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const role = user?.role_id;
+  const role = user?.employee?.role_id;
 
   const handleLogout = () => {
     logout();
@@ -121,6 +121,15 @@ const DashboardLayout = () => {
                 }
               >
                 Project
+              </NavLink>
+              <NavLink
+                to="/user"
+                className={({ isActive }) =>
+                  `hover:text-blue-600 ${isActive ? 'text-blue-700 font-semibold' : 'text-gray-800'
+                  }`
+                }
+              >
+                User
               </NavLink>
               {/* <Link to="/department" className="hover:text-blue-600">Department</Link> */}
               {/* <Link to="/department/create" className="pl-4 text-sm text-gray-600">➕ Add Department</Link> */}

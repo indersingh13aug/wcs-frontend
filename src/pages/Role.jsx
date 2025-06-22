@@ -27,15 +27,15 @@ const Role = () => {
     try {
       if (editing) {
         await axios.put(`/roles/${editing.id}`, formData);
-        Swal.fire("Updated!", "Role updated successfully", "success");
+        Swal.fire({icon: 'success',title: 'Updated!',text: "Role updated successfully.",});
       } else {
         await axios.post("/roles", formData);
-        Swal.fire("Created!", "Role created successfully", "success");
+        Swal.fire({icon: 'success',title: 'Created!',text: "Role created successfully.",});
       }
       fetchRoles();
       setShowForm(false);
     } catch (err) {
-      Swal.fire("Error", err.response?.data?.detail || "Failed to save", "error");
+      Swal.fire({icon: 'error' , title: 'Created!',text : err.response?.data?.detail || "Failed to save"});
     }
   };
 
