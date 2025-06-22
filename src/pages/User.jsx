@@ -136,7 +136,7 @@ const User = () => {
                   {user.is_active ? "Active" : "Inactive"}
                 </span>
               </td>
-              <td className="border p-2 space-x-2">
+              {/* <td className="border p-2 space-x-2"> */}
                 {/* <button
                   onClick={() => handleEditClick(user)}
                   disabled={!user.is_active}
@@ -163,7 +163,7 @@ const User = () => {
                     Activate
                   </button>
                 )} */}
-              </td>
+              {/* </td> */}
             </tr>
           ))}
         </tbody>
