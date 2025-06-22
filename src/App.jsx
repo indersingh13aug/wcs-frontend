@@ -12,21 +12,52 @@ import Project from './pages/Project';
 import Role from './pages/Role';
 import User from './pages/User';
 import GSTReceiptPage from './pages/GSTReceiptPage';
+import Unauthorized from './pages/Unauthorized'; // ❗️ Add this page
 import ProtectedRoute from './components/ProtectedRoute';
-import Unauthorized from './pages/Unauthorized'; // ❗ You need this
 
 function App() {
   return (
     <Routes>
+      {/* Public route */}
       <Route path="/" element={<Login />} />
 
+      {/* Protected Layout + Nested Routes */}
       <Route path="/" element={<DashboardLayout />}>
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="profile" element={<Profile />} />
-        <Route path="payroll" element={<Payroll />} />
-        <Route path="leave" element={<Leaves />} />
+        {/* Publicly visible to all logged-in users */}
+        <Route
+          path="dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="payroll"
+          element={
+            <ProtectedRoute>
+              <Payroll />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="leave"
+          element={
+            <ProtectedRoute>
+              <Leaves />
+            </ProtectedRoute>
+          }
+        />
 
-        {/* Protected routes */}
+        {/* Role-based protected routes */}
         <Route
           path="departments"
           element={
@@ -68,14 +99,6 @@ function App() {
           }
         />
         <Route
-          path="employees"
-          element={
-            <ProtectedRoute roles={[2]}>
-              <Employees />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="gstreceipt"
           element={
             <ProtectedRoute roles={[1]}>
@@ -84,7 +107,17 @@ function App() {
           }
         />
 
-        {/* Unauthorized route */}
+        {/* Employees accessible to role_id 2 */}
+        <Route
+          path="employees"
+          element={
+            <ProtectedRoute roles={[2]}>
+              <Employees />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Unauthorized page */}
         <Route path="unauthorized" element={<Unauthorized />} />
       </Route>
     </Routes>
