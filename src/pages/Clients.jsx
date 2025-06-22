@@ -143,6 +143,7 @@ const Client = () => {
         <thead className="bg-gray-100">
           <tr>
             <th className="border p-2">Name</th>
+            <th className="border p-2">Client Code</th>
             <th className="border p-2">Contact Person</th>
             <th className="border p-2">Email</th>
             <th className="border p-2">Phone</th>
@@ -156,6 +157,7 @@ const Client = () => {
           {clients.map(client => (
             <tr key={client.id}>
               <td className="border p-2">{client.name}</td>
+              <td className="border p-2">{client.client_code}</td>
               <td className="border p-2">{client.contact_person}</td>
               <td className="border p-2">{client.email}</td>
               <td className="border p-2">{client.phone}</td>

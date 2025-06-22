@@ -4,7 +4,7 @@ import React from 'react';
 const ClientForm = ({ formData, onChange, onSubmit, onCancel }) => {
   return (
     <form onSubmit={onSubmit} className="space-y-4">
-      {['name', 'contact_person', 'email', 'phone', 'address', 'gst_number'].map((field) => (
+      {['name', 'client_code','contact_person', 'email', 'phone', 'address', 'gst_number'].map((field) => (
         <div key={field}>
           <label className="block text-sm font-medium mb-1 capitalize">
             {field.replace('_', ' ')}
