@@ -15,6 +15,9 @@ import GSTInvoicePage from './pages/GSTInvoicePage';
 import Unauthorized from './pages/Unauthorized'; // ❗️ Add this page
 import ProtectedRoute from './components/ProtectedRoute';
 import GSTItems from './pages/GSTItems';
+import PageManager from './pages/PageManager'
+import RolePageAccess from './pages/RolePageAccess'
+
 function App() {
   return (
     <Routes>
@@ -79,6 +82,22 @@ function App() {
           element={
             <ProtectedRoute roles={[1]}>
               <Role />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="pagemanager"
+          element={
+            <ProtectedRoute roles={[1]}>
+              <PageManager />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="rolepageaccess"
+          element={
+            <ProtectedRoute roles={[1]}>
+              <RolePageAccess />
             </ProtectedRoute>
           }
         />

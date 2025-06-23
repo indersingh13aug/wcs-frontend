@@ -3,31 +3,36 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const DashboardLayout = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, accessiblePages } = useAuth();
   const navigate = useNavigate();
-  const role = user?.employee?.role_id;
+
+  const [openGroups, setOpenGroups] = useState({});
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
 
-  const [openMenus, setOpenMenus] = useState({
-    admin: false,
-    leave: false,
-    payroll: false,
-    gst: false,
-  });
-
-  const toggleMenu = (menu) => {
-    setOpenMenus((prev) => ({ ...prev, [menu]: !prev[menu] }));
+  const toggleGroup = (group) => {
+    setOpenGroups((prev) => ({ ...prev, [group]: !prev[group] }));
   };
+
+  // 🔸 Group pages by 'group'
+  const groupedPages = accessiblePages.reduce((acc, page) => {
+    const group = page.group || 'Other';
+    if (!acc[group]) acc[group] = [];
+    acc[group].push(page);
+    return acc;
+  }, {});
 
   const menuLink = (to, label) => (
     <NavLink
+      key={to}
       to={to}
       className={({ isActive }) =>
-        `block pl-6 py-1 text-sm hover:text-blue-600 ${isActive ? 'text-blue-700 font-semibold' : 'text-gray-800'}`
+        `block pl-6 py-1 text-sm hover:text-blue-600 ${
+          isActive ? 'text-blue-700 font-semibold' : 'text-gray-800'
+        }`
       }
     >
       {label}
@@ -38,13 +43,12 @@ const DashboardLayout = () => {
     <div className="flex h-screen bg-gray-100 text-gray-800">
       {/* Sidebar */}
       <aside className="w-64 bg-white border-r shadow-md p-4 flex flex-col gap-4">
-        {/* Logo */}
         <div className="flex flex-col items-center mb-4">
-          <img src="/logo.jpg" alt="Company Logo" className="h-16 w-auto object-contain mb-2 shadow" />
+          <img src="/logo.jpg" alt="Logo" className="h-16 w-auto mb-2 shadow" />
         </div>
 
         <nav className="flex flex-col gap-2 text-sm">
-          {/* Dashboard */}
+          {/* Always show dashboard */}
           <NavLink
             to="/dashboard"
             className={({ isActive }) =>
@@ -54,76 +58,23 @@ const DashboardLayout = () => {
             Dashboard
           </NavLink>
 
-          {/* Admin (role 1) */}
-          {role === 1 && (
-            <div>
-              <button onClick={() => toggleMenu('admin')} className="w-full text-left font-medium hover:text-blue-600">
-                Admin
+          {/* Dynamically render grouped menus */}
+          {Object.keys(groupedPages).map((group) => (
+            <div key={group}>
+              <button onClick={() => toggleGroup(group)} className="w-full text-left font-medium hover:text-blue-600">
+                {group}
               </button>
-              {openMenus.admin && (
+              {openGroups[group] && (
                 <div className="ml-2 flex flex-col">
-                  {menuLink('/departments', 'Department')}
-                  {menuLink('/clients', 'Client')}
-                  {menuLink('/role', 'Role')}
-                  {menuLink('/project', 'Project')}
-                  {menuLink('/user', 'User')}
-                  {menuLink('/leave', 'Leave')}
-                  {menuLink('/gstitems', 'GST Items')}
+                  {groupedPages[group].map((page) =>
+                    menuLink(page.path, page.name)
+                  )}
                 </div>
               )}
             </div>
-          )}
+          ))}
 
-          {/* Leave */}
-          <div>
-            <button onClick={() => toggleMenu('leave')} className="w-full text-left font-medium hover:text-blue-600">
-              Leave
-            </button>
-            {openMenus.leave && (
-              <div className="ml-2 flex flex-col">
-                {menuLink('/leave/apply', 'Apply Leave')}
-                {menuLink('/leave/balance', 'Leave Balance')}
-              </div>
-            )}
-          </div>
-
-          {/* Employees (role 2) */}
-          {role === 2 && (
-            <NavLink
-              to="/employees"
-              className={({ isActive }) =>
-                `hover:text-blue-600 ${isActive ? 'text-blue-700 font-semibold' : 'text-gray-800'}`
-              }
-            >
-              Employee
-            </NavLink>
-          )}
-
-          {/* Payroll */}
-          <div>
-            <button onClick={() => toggleMenu('payroll')} className="w-full text-left font-medium hover:text-blue-600">
-              Payroll
-            </button>
-            {openMenus.payroll && (
-              <div className="ml-2 flex flex-col">
-                {menuLink('/payroll/salary', 'Salary')}
-              </div>
-            )}
-          </div>
-
-          {/* GST */}
-          <div>
-            <button onClick={() => toggleMenu('gst')} className="w-full text-left font-medium hover:text-blue-600">
-              GST
-            </button>
-            {openMenus.gst && (
-              <div className="ml-2 flex flex-col">
-                {menuLink('/gstinvoice', 'GST Invoice')}
-              </div>
-            )}
-          </div>
-
-          {/* Profile */}
+          {/* Always show profile */}
           <NavLink
             to="/profile"
             className={({ isActive }) =>
@@ -135,10 +86,10 @@ const DashboardLayout = () => {
         </nav>
       </aside>
 
-      {/* Main content */}
+      {/* Main */}
       <div className="flex-1 flex flex-col">
         <header className="bg-white border-b px-6 py-4 flex justify-between items-center shadow-sm">
-          <h1 className="text-lg font-semibold">WCA Enterprise Resource Planning</h1>
+          <h1 className="text-lg font-semibold">WCA ERP</h1>
           <button
             onClick={handleLogout}
             className="text-sm bg-red-100 text-red-600 px-3 py-1 rounded hover:bg-red-200"
