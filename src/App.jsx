@@ -19,7 +19,7 @@ function App() {
   return (
     <Routes>
       {/* Public route */}
-      <Route path="/" element={<Login />} />
+      <Route path="/login" element={<Login />} />
 
       {/* Protected Layout + Nested Routes */}
       <Route path="/" element={<DashboardLayout />}>

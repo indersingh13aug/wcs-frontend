@@ -9,7 +9,7 @@ const DashboardLayout = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate('/login');
   };
 
   const [openMenus, setOpenMenus] = useState({

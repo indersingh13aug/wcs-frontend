@@ -9,7 +9,7 @@ const ProtectedRoute = ({ children, roles }) => {
 
   if (!user) {
     // Not logged in — redirect to login
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   if (roles && !roles.includes(user?.employee?.role_id)) {
