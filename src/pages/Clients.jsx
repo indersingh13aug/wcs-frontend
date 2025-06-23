@@ -9,8 +9,11 @@ const Client = () => {
   const [editingClient, setEditingClient] = useState(null);
   const [formData, setFormData] = useState({});
   const [showForm, setShowForm] = useState(false);
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
 
   const fetchClients = async () => {
+    
     try {
       const res = await axios.get('/clients?include_deleted=true');
       setClients(res.data);
@@ -20,7 +23,21 @@ const Client = () => {
   };
 
   useEffect(() => {
+    const fetchDropdowns = async () => {
+    try {
+      const [countryRes, indiaStates] = await Promise.all([
+      axios.get('/countries'),
+      axios.get('/states?country_code=IN'),
+    ]);
+    setCountries(countryRes.data);
+    setStates(indiaStates.data);
+    } catch (err) {
+      console.error("Failed to load country/state dropdowns", err);
+    }
+  };
+  
     fetchClients();
+    fetchDropdowns(); 
   }, []);
 
   const handleInputChange = (e) => {
@@ -51,15 +68,15 @@ const Client = () => {
       setShowForm(false);
       fetchClients();
     } catch (err) {
-          const message =
-            err.response?.data?.detail || "An unexpected error occurred.";
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: message,
-          });
-          console.error('Save failed', err);
-        }
+      const message =
+        err.response?.data?.detail || "An unexpected error occurred.";
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: message,
+      });
+      console.error('Save failed', err);
+    }
   };
 
   const handleActivate = async (clientId) => {
@@ -136,6 +153,8 @@ const Client = () => {
           onChange={handleInputChange}
           onSubmit={handleSubmit}
           onCancel={() => setShowForm(false)}
+          countries={countries}
+          states={states}
         />
       )}
 
@@ -161,7 +180,14 @@ const Client = () => {
               <td className="border p-2">{client.contact_person}</td>
               <td className="border p-2">{client.email}</td>
               <td className="border p-2">{client.phone}</td>
-              <td className="border p-2">{client.address}</td>
+
+              <td className="border p-2">
+                {[client.addressline1, client.addressline2, client.state, client.country, client.pincode]
+                  .filter(Boolean)
+                  .join(', ')}
+              </td>
+
+
               <td className="border p-2">{client.gst_number}</td>
               <td className="border p-2">
                 <span className={`px-2 py-1 rounded text-sm ${client.is_deleted ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>

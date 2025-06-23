@@ -5,12 +5,12 @@ import Dashboard from './pages/Dashboard';
 import Employees from './pages/Employees';
 import Payroll from './pages/Payroll';
 import Profile from './pages/Profile';
-import Departments from './pages/Departments';
+import Departments from './master/Departments';
 import Clients from './pages/Clients';
 import Leaves from './pages/Leaves';
-import Project from './pages/Project';
-import Role from './pages/Role';
-import User from './pages/User';
+import Project from './master/Project';
+import Role from './master/Role';
+import User from './master/User';
 import GSTInvoicePage from './pages/GSTInvoicePage';
 import Unauthorized from './pages/Unauthorized'; // ❗️ Add this page
 import ProtectedRoute from './components/ProtectedRoute';
