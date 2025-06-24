@@ -14,12 +14,23 @@ const DashboardLayout = () => {
   };
 
   const toggleGroup = (group) => {
-    setOpenGroups((prev) => ({ ...prev, [group]: !prev[group] }));
+    const hasSubmenu = groupedPages[group]?.length > 0;
+
+    setOpenGroups((prev) => {
+      // Collapse all groups first
+      const newState = {};
+      if (hasSubmenu) {
+        newState[group] = !prev[group]; // toggle only if it has submenu
+      }
+      return newState;
+    });
   };
+
+
 
   // 🔸 Group pages by 'group'
   const groupedPages = accessiblePages.reduce((acc, page) => {
-    const group = page.group_name || 'Other';
+    const group = page.group_name?.trim() || 'Other';
     if (!acc[group]) acc[group] = [];
     acc[group].push(page);
     return acc;
@@ -30,8 +41,7 @@ const DashboardLayout = () => {
       key={to}
       to={to}
       className={({ isActive }) =>
-        `block pl-6 py-1 text-sm hover:text-blue-600 ${
-          isActive ? 'text-blue-700 font-semibold' : 'text-gray-800'
+        `block pl-6 py-1 text-sm hover:text-blue-600 ${isActive ? 'text-blue-700 font-semibold' : 'text-gray-800'
         }`
       }
     >
@@ -61,28 +71,22 @@ const DashboardLayout = () => {
           {/* Dynamically render grouped menus */}
           {Object.keys(groupedPages).map((group) => (
             <div key={group}>
-              <button onClick={() => toggleGroup(group)} className="w-full text-left font-medium hover:text-blue-600">
+              <button
+                onClick={() => toggleGroup(group)}
+                className="w-full text-left font-medium hover:text-blue-600"
+              >
                 {group}
               </button>
-              {openGroups[group] && (
+
+              {/* Only render submenu if items exist */}
+              {openGroups[group] && groupedPages[group]?.length > 0 && (
                 <div className="ml-2 flex flex-col">
-                  {groupedPages[group].map((page) =>
-                    menuLink(page.path, page.name)
-                  )}
+                  {groupedPages[group].map((page) => menuLink(page.path, page.name))}
                 </div>
               )}
             </div>
           ))}
 
-          {/* Always show profile */}
-          <NavLink
-            to="/profile"
-            className={({ isActive }) =>
-              `hover:text-blue-600 ${isActive ? 'text-blue-700 font-semibold' : 'text-gray-800'}`
-            }
-          >
-            Profile
-          </NavLink>
         </nav>
       </aside>
 

@@ -1,4 +1,3 @@
-// src/pages/User.jsx
 import React, { useEffect, useState } from "react";
 import axios from "../services/axios";
 import Swal from "sweetalert2";
@@ -6,6 +5,7 @@ import UserForm from "../components/Forms/UserForm";
 
 const User = () => {
   const [users, setUsers] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [formData, setFormData] = useState({});
   const [editingUser, setEditingUser] = useState(null);
@@ -16,76 +16,45 @@ const User = () => {
     setUsers(res.data);
   };
 
-  const fetchEmployees = async () => {
-    const res = await axios.get("/employees/availableforuser");
+  const fetchRoles = async () => {
+    const res = await axios.get("/roles");
+    setRoles(res.data);
+  };
+
+  const fetchEmployeesByRole = async (roleId) => {
+    const res = await axios.get(`/employees/availableforuser?role_id=${roleId}`);
     setEmployees(res.data);
   };
 
   useEffect(() => {
     fetchUsers();
-    fetchEmployees();
+    fetchRoles();
   }, []);
 
   const handleAddClick = () => {
     setFormData({});
     setEditingUser(null);
+    setEmployees([]); // reset employee dropdown
     setShowForm(true);
   };
 
-  // const handleEditClick = (user) => {
-  //   if (!user.is_active) return;
-  //   setFormData(user);
-  //   setEditingUser(user);
-  //   setShowForm(true);
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-     // Alert all key-value pairs from formData
-    const entries = Object.entries(formData)
-      .map(([key, value]) => `${key}: ${value}`)
-      .join('\n');
-    alert(`Form Data:\n${entries}`);
-    
     try {
       if (editingUser) {
         await axios.put(`/users/${editingUser.id}`, formData);
-        Swal.fire({icon: 'success',title: 'Updated!',text: "User updated successfully",});
+        Swal.fire({ icon: "success", title: "Updated!", text: "User updated successfully" });
       } else {
-        
         await axios.post("/users", formData);
-        Swal.fire({icon: 'success',title: 'Created!',text: "User added successfully.",});
+        Swal.fire({ icon: "success", title: "Created!", text: "User added successfully." });
       }
       fetchUsers();
       setShowForm(false);
     } catch (err) {
       const msg = err.response?.data?.detail || "Save failed.";
-      Swal.fire("Error", msg, "error");
-      Swal.fire({icon: 'error',title: 'Error!',text: msg,});
+      Swal.fire({ icon: "error", title: "Error!", text: msg });
     }
   };
-
-  // const handleActivate = async (id) => {
-  //   await axios.put(`/users/${id}/activate`);
-  //   Swal.fire("Activated!", "User is now active.", "success");
-  //   fetchUsers();
-  // };
-
-  // const handleDeactivate = async (id) => {
-  //   const confirm = await Swal.fire({
-  //     title: "Are you sure?",
-  //     text: "Do you want to deactivate this user?",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonText: "Yes, deactivate",
-  //   });
-
-  //   if (confirm.isConfirmed) {
-  //     await axios.put(`/users/${id}/deactivate`);
-  //     Swal.fire("Deactivated!", "User has been deactivated.", "success");
-  //     fetchUsers();
-  //   }
-  // };
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
@@ -105,9 +74,11 @@ const User = () => {
         <UserForm
           formData={formData}
           setFormData={setFormData}
-          employees={employees}
-          onCancel={() => setShowForm(false)}
           onSubmit={handleSubmit}
+          onCancel={() => setShowForm(false)}
+          roles={roles}
+          employees={employees}
+          fetchEmployeesByRole={fetchEmployeesByRole}
         />
       )}
 
@@ -116,8 +87,8 @@ const User = () => {
           <tr>
             <th className="border p-2">User Name</th>
             <th className="border p-2">Employee</th>
+            <th className="border p-2">Role</th>
             <th className="border p-2">Status</th>
-            {/* <th className="border p-2">Actions</th> */}
           </tr>
         </thead>
         <tbody>
@@ -125,6 +96,7 @@ const User = () => {
             <tr key={user.id}>
               <td className="border p-2">{user.username}</td>
               <td className="border p-2">{user.employee_name}</td>
+              <td className="border p-2">{user.role_name}</td>
               <td className="border p-2">
                 <span
                   className={`px-2 py-1 rounded text-sm ${
@@ -136,34 +108,6 @@ const User = () => {
                   {user.is_active ? "Active" : "Inactive"}
                 </span>
               </td>
-              {/* <td className="border p-2 space-x-2"> */}
-                {/* <button
-                  onClick={() => handleEditClick(user)}
-                  disabled={!user.is_active}
-                  className={`px-2 py-1 rounded ${
-                    user.is_active
-                      ? "bg-blue-500 text-white"
-                      : "bg-gray-300 text-gray-600"
-                  }`}
-                >
-                  Edit
-                </button> */}
-                {/* {user.is_active ? (
-                  <button
-                    onClick={() => handleDeactivate(user.id)}
-                    className="text-red-600 hover:underline"
-                  >
-                    Deactivate
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => handleActivate(user.id)}
-                    className="text-green-600 hover:underline"
-                  >
-                    Activate
-                  </button>
-                )} */}
-              {/* </td> */}
             </tr>
           ))}
         </tbody>

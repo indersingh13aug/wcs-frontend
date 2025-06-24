@@ -1,14 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "../../services/axios";
 
-const UserForm = ({ formData, setFormData, employees, onSubmit, onCancel }) => {
+const UserForm = ({ formData, setFormData, roles, employees, onSubmit, onCancel }) => {
+  const [filteredEmployees, setFilteredEmployees] = useState([]);
+
+  useEffect(() => {
+    if (formData.role_id) {
+      fetchEmployeesByRole(formData.role_id);
+    } else {
+      setFilteredEmployees([]);
+    }
+  }, [formData.role_id]);
+
+  const fetchEmployeesByRole = async (roleId) => {
+    try {
+      const res = await axios.get(`/employees/availableforuser?role_id=${roleId}`);
+      setFilteredEmployees(res.data);
+    } catch (err) {
+      console.error("Failed to fetch employees", err);
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const newValue = name === "employee_id" ? Number(value) : value;
-    
-    setFormData((prev) => ({
-      ...prev,
-      [name]: newValue,
-    }));
+    const newValue = name === "employee_id" || name === "role_id" ? Number(value) : value;
+
+    let updatedForm = { ...formData, [name]: newValue };
+
+    if (name === "employee_id") {
+      const emp = filteredEmployees.find((e) => e.id === Number(value));
+      if (emp) {
+        updatedForm.username = `${emp.id}_${emp.full_name.replace(/\s+/g, "_").slice(0, 5).toLowerCase()}`;
+      }
+    }
+
+    setFormData(updatedForm);
   };
 
   return (
@@ -17,19 +43,25 @@ const UserForm = ({ formData, setFormData, employees, onSubmit, onCancel }) => {
         {formData.id ? "Edit User" : "Add User"}
       </h2>
       <form onSubmit={onSubmit} className="space-y-4">
-        {/* Username */}
+        {/* Role Dropdown */}
         <div>
           <label className="block font-medium">
-            User Name <span className="text-red-500">*</span>
+            Role <span className="text-red-500">*</span>
           </label>
-          <input
-            type="text"
-            name="username"
-            value={formData.username || ""}
+          <select
+            name="role_id"
+            value={formData.role_id || ""}
             onChange={handleChange}
             required
             className="w-full border px-3 py-2 rounded"
-          />
+          >
+            <option value="">-- Select Role --</option>
+            {roles.map((role) => (
+              <option key={role.id} value={role.id}>
+                {role.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Employee Dropdown */}
@@ -43,14 +75,29 @@ const UserForm = ({ formData, setFormData, employees, onSubmit, onCancel }) => {
             onChange={handleChange}
             required
             className="w-full border px-3 py-2 rounded"
+            disabled={!formData.role_id}
           >
             <option value="">-- Select Employee --</option>
-            {employees.map((emp) => (
+            {filteredEmployees.map((emp) => (
               <option key={emp.id} value={emp.id}>
                 {emp.full_name}
               </option>
             ))}
           </select>
+        </div>
+
+        {/* Username - Auto Generated */}
+        <div>
+          <label className="block font-medium">
+            Username <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            name="username"
+            value={formData.username || ""}
+            readOnly
+            className="w-full border px-3 py-2 rounded bg-gray-100"
+          />
         </div>
 
         {/* Buttons */}
