@@ -15,7 +15,7 @@ const Client = () => {
   const fetchClients = async () => {
     
     try {
-      const res = await axios.get('/clients?include_deleted=true');
+      const res = await axios.get('/clients');
       setClients(res.data);
     } catch (err) {
       console.error('Failed to fetch clients', err);

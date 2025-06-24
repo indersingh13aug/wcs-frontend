@@ -11,7 +11,7 @@ const Departments = () => {
 
   const fetchdepartments = async () => {
     try {
-      const res = await axios.get('/departments?include_deleted=true');
+      const res = await axios.get('/departments');
       setdepartments(res.data);
     } catch (err) {
       console.error('Failed to fetch departments', err);

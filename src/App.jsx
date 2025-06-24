@@ -6,7 +6,7 @@ import Employees from './pages/Employees';
 import Payroll from './pages/Payroll';
 import Profile from './pages/Profile';
 import Departments from './master/Departments';
-import Clients from './pages/Clients';
+import Clients from './master/Clients';
 import LeaveRequests from './pages/leave/LeaveRequests';
 import Project from './master/Project';
 import Role from './master/Role';
@@ -14,9 +14,12 @@ import User from './master/User';
 import GSTInvoicePage from './pages/GSTInvoicePage';
 import Unauthorized from './pages/Unauthorized'; // ❗️ Add this page
 import ProtectedRoute from './components/ProtectedRoute';
-import GSTItems from './pages/GSTItems';
+import GSTItems from './master/GSTItems';
 import PageManager from './pages/PageManager'
 import RolePageAccess from './pages/RolePageAccess'
+import Services from './master/Services'
+import Sales from './pages/Sales'
+
 
 
 function App() {
@@ -141,6 +144,23 @@ function App() {
           element={
             <ProtectedRoute roles={[2]}>
               <Employees />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="sales"
+          element={
+            <ProtectedRoute roles={[1]}>
+              <Sales />
+            </ProtectedRoute>
+          }
+        />
+         <Route
+          path="services"
+          element={
+            <ProtectedRoute roles={[1]}>
+              <Services />
             </ProtectedRoute>
           }
         />

@@ -13,7 +13,7 @@ const Project = () => {
   const [showForm, setShowForm] = useState(false);
 
   const fetchProjects = async () => {
-    const res = await axios.get("/projects?include_deleted=true");
+    const res = await axios.get("/projects");
     setProjects(res.data);
   };
 
