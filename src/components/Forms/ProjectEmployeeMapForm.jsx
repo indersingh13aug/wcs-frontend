@@ -13,105 +13,139 @@ const ProjectEmployeeMapForm = ({ onClose }) => {
   });
 
   useEffect(() => {
-    axios.get('/projects').then((res) => setProjects(res.data));
-    axios.get('/employees').then((res) => setEmployees(res.data));
+    const fetchData = async () => {
+      try {
+        const [projectRes, empRes] = await Promise.all([
+          axios.get('/projects'),
+          axios.get('/employees')
+        ]);
+
+        setProjects(projectRes.data || []);
+        setEmployees(empRes.data || []);
+      } catch (error) {
+        console.error('Error fetching dropdown data:', error);
+      }
+    };
+
+    fetchData();
   }, []);
+
+  const handleEmployeeToggle = (id) => {
+    setForm((prev) => {
+      const updated = prev.employee_ids.includes(id)
+        ? prev.employee_ids.filter((empId) => empId !== id)
+        : [...prev.employee_ids, id];
+      return { ...prev, employee_ids: updated };
+    });
+  };
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleCheckboxChange = (e) => {
-    const empId = parseInt(e.target.value);
-    setForm((prev) => ({
-      ...prev,
-      employee_ids: e.target.checked
-        ? [...prev.employee_ids, empId]
-        : prev.employee_ids.filter((id) => id !== empId)
-    }));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { project_id, employee_ids, from_date, to_date, remarks } = form;
-    if (!project_id || employee_ids.length === 0 || !from_date || !to_date) {
+    if (!form.project_id || form.employee_ids.length === 0 || !form.from_date || !form.to_date) {
       alert('All fields are required');
       return;
     }
 
-    // 👇 Save one record per employee
-    await Promise.all(
-      employee_ids.map((empId) =>
-        axios.post('/project-employee-maps', {
-          project_id,
-          employee_id: empId,
-          from_date,
-          to_date,
-          remarks
-        })
-      )
-    );
-
-    onClose(); // close and refresh
+    try {
+      await axios.post('/project-employee-maps', form);
+      onClose();
+    } catch (err) {
+      console.error('Submission failed:', err);
+      alert('Error saving project mapping');
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow mb-6">
-      <div className="mb-4">
+    <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow space-y-4">
+      <div>
         <label className="block font-medium mb-1">Project</label>
         <select
           name="project_id"
           value={form.project_id}
           onChange={handleChange}
           className="w-full border px-3 py-2 rounded"
-          required
         >
           <option value="">-- Select Project --</option>
-          {projects.map((p) => (
-            <option key={p.id} value={p.id}>{p.name}</option>
+          {projects.map((proj) => (
+            <option key={proj.id} value={proj.id}>
+              {proj.name}
+            </option>
           ))}
         </select>
       </div>
 
-      <div className="mb-4">
+      <div>
         <label className="block font-medium mb-1">Select Employees</label>
-        <div className="grid grid-cols-2 gap-2 border p-3 rounded max-h-64 overflow-y-auto">
-          {employees.map((e) => (
-            <label key={e.id} className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                value={e.id}
-                checked={form.employee_ids.includes(e.id)}
-                onChange={handleCheckboxChange}
-              />
-              {e.first_name} {e.last_name} ({e.role_name})
-            </label>
-          ))}
+        <div className="border p-3 rounded max-h-48 overflow-y-auto">
+          {employees.length === 0 ? (
+            <p className="text-sm text-gray-500">No employees available</p>
+          ) : (
+            employees.map((emp) => (
+              <label key={emp.id} className="flex items-center space-x-2 mb-1">
+                <input
+                  type="checkbox"
+                  checked={form.employee_ids.includes(emp.id)}
+                  onChange={() => handleEmployeeToggle(emp.id)}
+                />
+                <span>
+                  {emp.first_name} {emp.last_name} ({emp.role?.name || 'No Role'})
+                </span>
+              </label>
+            ))
+          )}
         </div>
       </div>
 
-      <div className="mb-4">
-        <label className="block font-medium mb-1">From Date</label>
-        <input type="date" name="from_date" value={form.from_date} onChange={handleChange}
-          className="w-full border px-3 py-2 rounded" required />
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block font-medium mb-1">From Date</label>
+          <input
+            type="date"
+            name="from_date"
+            value={form.from_date}
+            onChange={handleChange}
+            className="w-full border px-3 py-2 rounded"
+          />
+        </div>
+
+        <div>
+          <label className="block font-medium mb-1">To Date</label>
+          <input
+            type="date"
+            name="to_date"
+            value={form.to_date}
+            onChange={handleChange}
+            className="w-full border px-3 py-2 rounded"
+          />
+        </div>
       </div>
 
-      <div className="mb-4">
-        <label className="block font-medium mb-1">To Date</label>
-        <input type="date" name="to_date" value={form.to_date} onChange={handleChange}
-          className="w-full border px-3 py-2 rounded" required />
-      </div>
-
-      <div className="mb-4">
+      <div>
         <label className="block font-medium mb-1">Remarks</label>
-        <textarea name="remarks" value={form.remarks} onChange={handleChange}
-          className="w-full border px-3 py-2 rounded" rows="3" required />
+        <textarea
+          name="remarks"
+          value={form.remarks}
+          onChange={handleChange}
+          className="w-full border px-3 py-2 rounded"
+        />
       </div>
 
-      <div className="flex gap-3">
-        <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">Save</button>
-        <button type="button" onClick={onClose} className="bg-gray-300 px-4 py-2 rounded">Cancel</button>
+      <div className="flex justify-end gap-4">
+        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
+          Save
+        </button>
+        <button
+          type="button"
+          onClick={onClose}
+          className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+        >
+          Cancel
+        </button>
       </div>
     </form>
   );

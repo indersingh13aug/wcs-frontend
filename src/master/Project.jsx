@@ -104,7 +104,6 @@ const Project = () => {
           formData={formData}
           setFormData={setFormData}
           clients={clients}
-          employees={employees}
           onCancel={() => setShowForm(false)}
           onSubmit={handleSubmit}
         />
