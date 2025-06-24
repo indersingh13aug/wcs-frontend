@@ -19,7 +19,7 @@ const DashboardLayout = () => {
 
   // 🔸 Group pages by 'group'
   const groupedPages = accessiblePages.reduce((acc, page) => {
-    const group = page.group || 'Other';
+    const group = page.group_name || 'Other';
     if (!acc[group]) acc[group] = [];
     acc[group].push(page);
     return acc;

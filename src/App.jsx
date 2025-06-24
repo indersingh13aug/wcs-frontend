@@ -15,7 +15,7 @@ import GSTInvoicePage from './pages/GSTInvoicePage';
 import Unauthorized from './pages/Unauthorized'; // ❗️ Add this page
 import ProtectedRoute from './components/ProtectedRoute';
 import GSTItems from './master/GSTItems';
-import PageManager from './pages/PageManager'
+import PageManager from './master/PageManager'
 import RolePageAccess from './pages/RolePageAccess'
 import Services from './master/Services'
 import Sales from './pages/Sales'
