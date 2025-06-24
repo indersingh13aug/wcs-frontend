@@ -1,12 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from '../../services/axios';
 
 const LeaveRequestForm = ({ onSubmit, onCancel }) => {
+  const [leaveTypes, setLeaveTypes] = useState([]);
   const [form, setForm] = useState({
     start_date: '',
     end_date: '',
-    type:'',
+    leave_type_id: '', // 👈 updated
     reason: ''
   });
+
+  useEffect(() => {
+    axios.get('/leave-types').then(res => {
+      const activeTypes = res.data.filter(l => !l.is_deleted);
+      setLeaveTypes(activeTypes);
+    });
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -14,7 +23,8 @@ const LeaveRequestForm = ({ onSubmit, onCancel }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.start_date || !form.end_date || !form.reason) {
+    const { start_date, end_date, leave_type_id, reason } = form;
+    if (!start_date || !end_date || !leave_type_id || !reason) {
       alert('All fields are required');
       return;
     }
@@ -25,49 +35,41 @@ const LeaveRequestForm = ({ onSubmit, onCancel }) => {
     <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 space-y-4">
       <div>
         <label className="block text-sm font-medium mb-1">Start Date</label>
-        <input
-          type="date"
-          name="start_date"
-          value={form.start_date}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500"
-        />
+        <input type="date" name="start_date" value={form.start_date} onChange={handleChange}
+          className="w-full border px-3 py-2 rounded" />
       </div>
 
       <div>
         <label className="block text-sm font-medium mb-1">End Date</label>
-        <input
-          type="date"
-          name="end_date"
-          value={form.end_date}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500"
-        />
+        <input type="date" name="end_date" value={form.end_date} onChange={handleChange}
+          className="w-full border px-3 py-2 rounded" />
       </div>
-    <div>
-        <label className="block text-sm font-medium mb-1">Leave Type</label>
-        <input type="text" name="type" value={form.type} onChange={handleChange} placeholder="Leave Type (CL, EL etc)" className="input" required />
 
+      <div>
+        <label className="block text-sm font-medium mb-1">Leave Type</label>
+        <select
+          name="leave_type_id"
+          value={form.leave_type_id}
+          onChange={handleChange}
+          className="w-full border px-3 py-2 rounded"
+          required
+        >
+          <option value="">-- Select Leave Type --</option>
+          {leaveTypes.map((type) => (
+            <option key={type.id} value={type.id}>{type.name}</option>
+          ))}
+        </select>
       </div>
 
       <div>
         <label className="block text-sm font-medium mb-1">Reason</label>
-        <textarea
-          name="reason"
-          value={form.reason}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500"
-        />
+        <textarea name="reason" value={form.reason} onChange={handleChange}
+          className="w-full border px-3 py-2 rounded" />
       </div>
 
-      
-      <div className="flex gap-2 justify-end">
-        <button type="button" onClick={onCancel} className="bg-gray-300 px-4 py-2 rounded">
-          Cancel
-        </button>
-        <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">
-          Submit
-        </button>
+      <div className="flex gap-3">
+        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Submit</button>
+        <button type="button" onClick={onCancel} className="bg-gray-300 px-4 py-2 rounded">Cancel</button>
       </div>
     </form>
   );

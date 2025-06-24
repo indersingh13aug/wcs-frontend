@@ -1,76 +1,90 @@
-import React, { useEffect, useState } from 'react';
-import axios from '../../services/axios';
+import React, { useEffect, useState } from "react";
+import axios from "../../services/axios";
+import { useAuth } from "../../context/AuthContext";
+import Swal from "sweetalert2";
 
-const LeaveRequests = () => {
+const LeaveWorklist = () => {
+  const { user } = useAuth();
   const [leaves, setLeaves] = useState([]);
 
-  useEffect(() => {
-    const fetchLeaves = async () => {
-      try {
-        const res = await axios.get('/leaves');
-        setLeaves(res.data);
-      } catch (err) {
-        console.error('Failed to load leave requests:', err);
-      }
-    };
+  const fetchLeaves = async () => {
+    try {
+      const res = await axios.get(`/leave-worklist/${user?.employee?.id}`);
+      setLeaves(res.data);
+    } catch (err) {
+      console.error("Failed to fetch leave worklist", err);
+    }
+  };
 
-    fetchLeaves();
-  }, []);
+  const handleAction = async (leaveId, action) => {
+    try {
+      await axios.put(`/leaves/${leaveId}/status`, action);
+      Swal.fire({
+        icon: "success",
+        title: `Leave ${action}`,
+        text: `Leave has been ${action.toLowerCase()} successfully.`,
+      });
+      fetchLeaves();
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Unable to update leave status.",
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (user?.employee?.id) fetchLeaves();
+  }, [user]);
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">Leave Requests</h2>
+    <div className="p-6 max-w-5xl mx-auto space-y-4">
+      <h1 className="text-2xl font-semibold">Leave Worklist</h1>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white rounded-xl shadow">
+      {leaves.length === 0 ? (
+        <p>There are no pending leaves.</p>
+      ) : (
+        <table className="w-full bg-white rounded shadow overflow-hidden text-sm">
           <thead className="bg-gray-100">
             <tr>
-              <th className="px-4 py-2 text-left">Employee</th>
+              <th className="px-4 py-2 text-left">Employee Name</th>
               <th className="px-4 py-2 text-left">Leave Type</th>
               <th className="px-4 py-2 text-left">From</th>
               <th className="px-4 py-2 text-left">To</th>
-              <th className="px-4 py-2 text-left">Status</th>
               <th className="px-4 py-2 text-left">Reason</th>
+              <th className="px-4 py-2 text-left">Action</th>
             </tr>
           </thead>
           <tbody>
-            {leaves.length === 0 ? (
-              <tr>
-                <td colSpan="6" className="text-center py-6 text-gray-500">
-                  No leave requests found.
+            {leaves.map((leave) => (
+              <tr key={leave.id} className="border-t">
+                <td className="px-4 py-2">{leave.employee_name}</td>
+                <td className="px-4 py-2">{leave.leave_type}</td>
+                <td className="px-4 py-2">{leave.start_date}</td>
+                <td className="px-4 py-2">{leave.end_date}</td>
+                <td className="px-4 py-2">{leave.reason}</td>
+                <td className="px-4 py-2 flex gap-2">
+                  <button
+                    onClick={() => handleAction(leave.id, "Approved")}
+                    className="bg-green-500 text-white px-2 py-1 rounded"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    onClick={() => handleAction(leave.id, "Rejected")}
+                    className="bg-red-500 text-white px-2 py-1 rounded"
+                  >
+                    Reject
+                  </button>
                 </td>
               </tr>
-            ) : (
-              leaves.map((leave) => (
-                <tr key={leave.id} className="border-t">
-                  <td className="px-4 py-2">
-                    {leave.first_name} {leave.last_name}
-                  </td>
-                  <td className="px-4 py-2">{leave.leave_type}</td>
-                  <td className="px-4 py-2">{leave.start_date}</td>
-                  <td className="px-4 py-2">{leave.end_date}</td>
-                  <td className="px-4 py-2">
-                    <span
-                      className={`px-2 py-1 rounded text-sm font-medium ${
-                        leave.status === 'Approved'
-                          ? 'bg-green-100 text-green-700'
-                          : leave.status === 'Pending'
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-red-100 text-red-700'
-                      }`}
-                    >
-                      {leave.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-2">{leave.reason}</td>
-                </tr>
-              ))
-            )}
+            ))}
           </tbody>
         </table>
-      </div>
+      )}
     </div>
   );
 };
 
-export default LeaveRequests;
+export default LeaveWorklist;

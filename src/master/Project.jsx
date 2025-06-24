@@ -7,7 +7,6 @@ import ProjectForm from "../components/Forms/ProjectForm";
 const Project = () => {
   const [projects, setProjects] = useState([]);
   const [clients, setClients] = useState([]);
-  const [employees, setEmployees] = useState([]);
   const [formData, setFormData] = useState({});
   const [editingProject, setEditingProject] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -22,15 +21,11 @@ const Project = () => {
     setClients(res.data);
   };
 
-  const fetchITEmployees = async () => {
-    const res = await axios.get("/it");
-    setEmployees(res.data);
-  };
 
   useEffect(() => {
     fetchProjects();
     fetchClients();
-    fetchITEmployees();
+    
   }, []);
 
   const handleAddClick = () => {
@@ -41,10 +36,7 @@ const Project = () => {
 
   const handleEditClick = (project) => {
     if (project.is_deleted) return;
-    const assignedTeamArray = project.assigned_team
-      ? project.assigned_team.split(",").map((id) => parseInt(id.trim())) 
-      : [];
-    setFormData({ ...project, assigned_team: assignedTeamArray });
+    setFormData({ ...project });
     setEditingProject(project);
     setShowForm(true);
   };
@@ -52,8 +44,7 @@ const Project = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = {
-      ...formData,
-      assigned_team: formData.assigned_team.join(","),
+      ...formData
     };
 
     try {
@@ -125,7 +116,7 @@ const Project = () => {
             <th className="border p-2">Name</th>
             <th className="border p-2">Description</th>
             <th className="border p-2">Client</th>
-            <th className="border p-2">Assigned Team</th>
+            
             <th className="border p-2">Status</th>
             <th className="border p-2">Actions</th>
           </tr>
@@ -136,7 +127,7 @@ const Project = () => {
               <td className="border p-2">{project.name}</td>
               <td className="border p-2">{project.description}</td>
               <td className="border p-2">{project.client_name}</td>
-              <td className="border p-2">{project.assigned_team_names}</td>
+             
               <td className="border p-2">
                 <span
                   className={`px-2 py-1 rounded text-sm ${

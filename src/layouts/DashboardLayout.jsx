@@ -15,7 +15,7 @@ const DashboardLayout = () => {
 
   const toggleGroup = (group) => {
     const hasSubmenu = groupedPages[group]?.length > 0;
-
+    
     setOpenGroups((prev) => {
       // Collapse all groups first
       const newState = {};
@@ -35,7 +35,8 @@ const DashboardLayout = () => {
     acc[group].push(page);
     return acc;
   }, {});
-
+  console.log("Grouped Pages:", groupedPages);
+  
   const menuLink = (to, label) => (
     <NavLink
       key={to}

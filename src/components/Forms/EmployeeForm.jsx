@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from '../../services/axios';
 import { useAuth } from '../../context/AuthContext';
 
-const EmployeeForm = ({ onSubmit, employee = null }) => {
+const EmployeeForm = ({ onSubmit, onCancel,employee = null }) => {
   const [form, setForm] = useState({
     first_name: '',
     middle_name: '',
@@ -97,8 +97,17 @@ const EmployeeForm = ({ onSubmit, employee = null }) => {
   </label>
 
   {/* Submit Button */}
-  <div className="col-span-2 text-right">
-    <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Save</button>
+   <div className="flex gap-3">
+    <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
+          Save
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="bg-gray-400 text-white px-4 py-2 rounded"
+        >
+          Cancel
+        </button>
   </div>
 </form>
 

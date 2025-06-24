@@ -39,12 +39,18 @@ const Employees = () => {
     <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">All Employees</h2>
-        <button onClick={() => setShowForm(!showForm)} className="bg-green-600 text-white px-4 py-2 rounded">
-          {showForm ? 'Cancel' : 'Add Employee'}
-        </button>
+        
+        {!showForm && (
+          <button
+            onClick={() => setShowForm(!showForm)} 
+            className="bg-blue-600 text-white px-4 py-2 rounded"
+          >
+            Add Employee
+          </button>
+        )}
       </div>
 
-      {showForm && <EmployeeForm onSubmit={handleAddEmployee} />}
+      {showForm && <EmployeeForm onSubmit={handleAddEmployee} onCancel={() => setShowForm(false)} />}
 
       <div className="overflow-x-auto mt-6">
         <table className="min-w-full bg-white rounded-xl shadow">
@@ -63,7 +69,7 @@ const Employees = () => {
                 <td className="px-4 py-2">{emp.first_name} {emp.last_name}</td>
                 <td className="px-4 py-2">{emp.email}</td>
                 <td className="px-4 py-2">{emp.department?.name || `#${emp.department_id}`}</td>
-                <td className="px-4 py-2">{emp.role?.name || `#${emp.role_id}`}</td>
+                <td>{emp.role?.name || "No Role Assigned"}</td> {/* ✅ This fixes #null */}
                 <td className="px-4 py-2">
                   <span className={`px-2 py-1 text-sm rounded font-medium ${emp.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                     {emp.status}

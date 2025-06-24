@@ -12,15 +12,17 @@ import Project from './master/Project';
 import Role from './master/Role';
 import User from './master/User';
 import GSTInvoicePage from './pages/GSTInvoicePage';
-import Unauthorized from './pages/Unauthorized'; // ❗️ Add this page
+import Unauthorized from './pages/Unauthorized'; 
 import ProtectedRoute from './components/ProtectedRoute';
 import GSTItems from './master/GSTItems';
 import PageManager from './master/PageManager'
 import RolePageAccess from './pages/RolePageAccess'
 import Services from './master/Services'
 import Sales from './pages/Sales'
-
-
+import RoleUserMap from './pages/RoleUserMap'
+import LeaveTypes from './master/LeaveTypes';
+import LeaveWorklist from './pages/leave/LeaveWorklist';
+import ProjectEmployeeMap from './pages/ProjectEmployeeMap';
 
 function App() {
   return (
@@ -63,20 +65,52 @@ function App() {
             </ProtectedRoute>
           }
         />
-
+      <Route
+          path="leavetypes"
+          element={
+            <ProtectedRoute>
+              <LeaveTypes />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="leaveworklist"
+          element={
+            <ProtectedRoute>
+              <LeaveWorklist />
+            </ProtectedRoute>
+          }
+        />
         {/* Role-based protected routes */}
         <Route
           path="departments"
           element={
-            <ProtectedRoute roles={[1]}>
+            <ProtectedRoute>
               <Departments />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="projectemployeemap"
+          element={
+            <ProtectedRoute>
+              <ProjectEmployeeMap />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="roleusermap"
+          element={
+            <ProtectedRoute>
+              <RoleUserMap />
             </ProtectedRoute>
           }
         />
         <Route
           path="clients"
           element={
-            <ProtectedRoute roles={[1]}>
+            <ProtectedRoute>
               <Clients />
             </ProtectedRoute>
           }
@@ -84,7 +118,7 @@ function App() {
         <Route
           path="roles"
           element={
-            <ProtectedRoute roles={[1]}>
+            <ProtectedRoute>
               <Role />
             </ProtectedRoute>
           }
@@ -92,7 +126,7 @@ function App() {
         <Route
           path="pagemanager"
           element={
-            <ProtectedRoute roles={[1]}>
+            <ProtectedRoute>
               <PageManager />
             </ProtectedRoute>
           }
@@ -100,7 +134,7 @@ function App() {
         <Route
           path="rolepageaccess"
           element={
-            <ProtectedRoute roles={[1]}>
+            <ProtectedRoute>
               <RolePageAccess />
             </ProtectedRoute>
           }
@@ -108,7 +142,7 @@ function App() {
         <Route
           path="projects"
           element={
-            <ProtectedRoute roles={[1]}>
+            <ProtectedRoute>
               <Project />
             </ProtectedRoute>
           }
@@ -116,7 +150,7 @@ function App() {
         <Route
           path="users"
           element={
-            <ProtectedRoute roles={[1]}>
+            <ProtectedRoute>
               <User />
             </ProtectedRoute>
           }
@@ -124,7 +158,7 @@ function App() {
         <Route
           path="gst-invoices"
           element={
-            <ProtectedRoute roles={[1]}>
+            <ProtectedRoute>
               <GSTInvoicePage />
             </ProtectedRoute>
           }
@@ -132,7 +166,7 @@ function App() {
         <Route
           path="gst-items"
           element={
-            <ProtectedRoute roles={[1]}>
+            <ProtectedRoute>
               <GSTItems />
             </ProtectedRoute>
           }
@@ -142,7 +176,7 @@ function App() {
         <Route
           path="employees"
           element={
-            <ProtectedRoute roles={[2]}>
+            <ProtectedRoute>
               <Employees />
             </ProtectedRoute>
           }
@@ -151,7 +185,7 @@ function App() {
         <Route
           path="sales"
           element={
-            <ProtectedRoute roles={[1]}>
+            <ProtectedRoute>
               <Sales />
             </ProtectedRoute>
           }
@@ -159,7 +193,7 @@ function App() {
          <Route
           path="services"
           element={
-            <ProtectedRoute roles={[1]}>
+            <ProtectedRoute>
               <Services />
             </ProtectedRoute>
           }

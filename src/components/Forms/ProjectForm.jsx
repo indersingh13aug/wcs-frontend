@@ -1,23 +1,12 @@
 // src/components/Forms/ProjectForm.jsx
 import React from "react";
 
-const ProjectForm = ({ formData, setFormData, clients, employees, onSubmit, onCancel }) => {
+const ProjectForm = ({ formData, setFormData, clients, onSubmit, onCancel }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }));
-  };
-
-  const handleCheckboxChange = (id) => {
-    const team = formData.assigned_team || [];
-    const updatedTeam = team.includes(id)
-      ? team.filter((memberId) => memberId !== id)
-      : [...team, id];
-    setFormData((prev) => ({
-      ...prev,
-      assigned_team: updatedTeam,
     }));
   };
 
@@ -71,23 +60,6 @@ const ProjectForm = ({ formData, setFormData, clients, employees, onSubmit, onCa
           </select>
         </div>
 
-        {/* Assigned Team (Checkbox List) */}
-        <div>
-          <label className="block font-medium mb-2">Assigned Team</label>
-          <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto border rounded p-2">
-            {employees.map((emp) => (
-              <label key={emp.id} className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  value={emp.id}
-                  checked={(formData.assigned_team || []).includes(emp.id)}
-                  onChange={() => handleCheckboxChange(emp.id)}
-                />
-                {emp.full_name}
-              </label>
-            ))}
-          </div>
-        </div>
 
         {/* Buttons */}
         <div className="flex gap-2 justify-end">
