@@ -89,7 +89,7 @@ const DashboardLayout = () => {
       {/* Main */}
       <div className="flex-1 flex flex-col">
         <header className="bg-white border-b px-6 py-4 flex justify-between items-center shadow-sm">
-          <h1 className="text-lg font-semibold">WCA ERP</h1>
+          <h1 className="text-lg font-semibold">Enterprise Resource Planning</h1>
           <button
             onClick={handleLogout}
             className="text-sm bg-red-100 text-red-600 px-3 py-1 rounded hover:bg-red-200"

@@ -7,7 +7,7 @@ import Payroll from './pages/Payroll';
 import Profile from './pages/Profile';
 import Departments from './master/Departments';
 import Clients from './pages/Clients';
-import Leaves from './pages/Leaves';
+import LeaveRequests from './pages/leave/LeaveRequests';
 import Project from './master/Project';
 import Role from './master/Role';
 import User from './master/User';
@@ -17,6 +17,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import GSTItems from './pages/GSTItems';
 import PageManager from './pages/PageManager'
 import RolePageAccess from './pages/RolePageAccess'
+
 
 function App() {
   return (
@@ -52,10 +53,10 @@ function App() {
           }
         />
         <Route
-          path="leave"
+          path="leave-request"
           element={
             <ProtectedRoute>
-              <Leaves />
+              <LeaveRequests />
             </ProtectedRoute>
           }
         />
@@ -78,7 +79,7 @@ function App() {
           }
         />
         <Route
-          path="role"
+          path="roles"
           element={
             <ProtectedRoute roles={[1]}>
               <Role />
@@ -102,7 +103,7 @@ function App() {
           }
         />
         <Route
-          path="project"
+          path="projects"
           element={
             <ProtectedRoute roles={[1]}>
               <Project />
@@ -110,7 +111,7 @@ function App() {
           }
         />
         <Route
-          path="user"
+          path="users"
           element={
             <ProtectedRoute roles={[1]}>
               <User />
@@ -118,7 +119,7 @@ function App() {
           }
         />
         <Route
-          path="gstinvoice"
+          path="gst-invoices"
           element={
             <ProtectedRoute roles={[1]}>
               <GSTInvoicePage />
@@ -126,7 +127,7 @@ function App() {
           }
         />
         <Route
-          path="gstitems"
+          path="gst-items"
           element={
             <ProtectedRoute roles={[1]}>
               <GSTItems />

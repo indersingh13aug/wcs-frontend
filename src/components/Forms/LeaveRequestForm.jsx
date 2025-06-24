@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const LeaveForm = ({ onSubmit, onCancel }) => {
+const LeaveRequestForm = ({ onSubmit, onCancel }) => {
   const [form, setForm] = useState({
     start_date: '',
     end_date: '',
@@ -73,4 +73,4 @@ const LeaveForm = ({ onSubmit, onCancel }) => {
   );
 };
 
-export default LeaveForm;
+export default LeaveRequestForm;

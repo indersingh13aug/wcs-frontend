@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import axios from '../services/axios';
-import LeaveForm from '../components/Forms/LeaveForm';
-import { useAuth } from '../context/AuthContext';
+import axios from '../../services/axios';
+import LeaveRequestForm from '../../components/Forms/LeaveRequestForm';
+import { useAuth } from '../../context/AuthContext';
 
 const Leaves = () => {
   const [leaves, setLeaves] = useState([]);
@@ -47,7 +47,7 @@ const Leaves = () => {
 
       {showForm && (
         <div className="mb-6">
-          <LeaveForm onSubmit={handleLeaveSubmit} onCancel={() => setShowForm(false)} />
+          <LeaveRequestForm onSubmit={handleLeaveSubmit} onCancel={() => setShowForm(false)} />
         </div>
       )}
 
