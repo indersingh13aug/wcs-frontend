@@ -21,6 +21,8 @@ import Services from './master/Services'
 import Sales from './pages/Sales'
 import RoleUserMap from './pages/RoleUserMap'
 import LeaveTypes from './master/LeaveTypes';
+import Tasks from './master/Tasks';
+import TaskAssign from './pages/TaskAssign';
 import LeaveWorklist from './pages/leave/LeaveWorklist';
 import ProjectEmployeeMap from './pages/ProjectEmployeeMap';
 
@@ -73,6 +75,19 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="tasklist" element={
+            <ProtectedRoute>
+              <Tasks />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="taskassign" element={
+            <ProtectedRoute>
+              <TaskAssign />
+            </ProtectedRoute>
+          }
+        />
+        
         <Route
           path="leaveworklist"
           element={
