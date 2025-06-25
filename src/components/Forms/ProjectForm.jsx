@@ -62,20 +62,9 @@ const ProjectForm = ({ formData, setFormData, clients, onSubmit, onCancel }) => 
 
 
         {/* Buttons */}
-        <div className="flex gap-2 justify-end">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="bg-gray-400 text-white px-4 py-2 rounded"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded"
-          >
-            {formData.id ? "Update" : "Save"}
-          </button>
+        <div className="flex gap-3">
+          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Save</button>
+          <button type="button" onClick={onCancel} className="bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>
         </div>
       </form>
     </div>

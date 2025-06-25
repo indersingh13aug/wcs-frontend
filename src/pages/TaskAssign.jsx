@@ -70,13 +70,11 @@ const TaskAssign = () => {
      
       // Step 2: Save initial comment if present
     if (comments?.trim() && assignmentId) {
-      alert('hrere')
       await axios.post("/task-comments", {
         assignment_id: assignmentId,
         employee_id: employee_id,
         comment: comments.trim()
       });
-      alert('hrerer')
     }
       setShowForm(false);
       fetchAssignments();
@@ -95,7 +93,7 @@ const TaskAssign = () => {
             onClick={handleAddClick}
             className="bg-blue-600 text-white px-4 py-2 rounded"
           >
-            Add Task
+            Assign Task
           </button>
         )}
       </div>
