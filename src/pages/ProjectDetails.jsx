@@ -8,219 +8,236 @@ const ProjectDetails = () => {
   const employeeId = user?.employee?.id;
 
   const [projects, setProjects] = useState([]);
-  const [selectedProjectId, setSelectedProjectId] = useState(null);
-  const [taskAssignments, setTaskAssignments] = useState([]);
-  const [selectedAssignmentId, setSelectedAssignmentId] = useState(null);
-  const [employeeOptions, setEmployeeOptions] = useState([]);
-  const [taskStatus, setTaskStatus] = useState("");
-  const [assignToId, setAssignToId] = useState("");
-  const [comment, setComment] = useState("");
-  const [comments, setComments] = useState([]);
-  const [taskOptions, setTaskOptions] = useState([]);
+  const [selectedProjectId, setSelectedProjectId] = useState("");
+  const [projectTasks, setProjectTasks] = useState([]);
   const [selectedTaskId, setSelectedTaskId] = useState("");
+  const [assignment, setAssignment] = useState(null);
 
-  // Fetch all task assignments for current user
-  const fetchAssignments = async () => {
-    try {
-      const res = await axios.get(`/employees/${employeeId}/assignments`);
-      const assignments = res.data.filter(a => !a.is_deleted);
-      setTaskAssignments(assignments);
+  const [comment, setComment] = useState("");
+  const [assignToId, setAssignToId] = useState("");
+  const [status, setStatus] = useState("");
+  const [employees, setEmployees] = useState([]);
+  const [comments, setComments] = useState([]);
 
-      if (assignments.length === 1) {
-        setSelectedProjectId(assignments[0].project.id);
-        setSelectedAssignmentId(assignments[0].id);
-        setSelectedTaskId(assignments[0].task.id);
-        setTaskStatus(assignments[0].status);
-        setAssignToId(assignments[0].employee_id);
-      } else if (assignments.length > 1) {
-        setProjects(assignments.map(a => a.project));
-      }
-    } catch (err) {
-      console.error("Failed to fetch assignments", err);
-    }
+  useEffect(() => {
+    axios.get(`/employees/${employeeId}/assignments`)
+      .then(res => {
+        const assignments = res.data;
+        setAllAssignments(assignments); // save full list
+
+        if (assignments.length === 0) {
+          setProjects([]); // clear any old state
+          return; // no need to continue
+        }
+
+        const uniqueProjects = [
+          ...new Map(assignments.map(a => [a.project.id, a.project])).values()
+        ];
+        setProjects(uniqueProjects);
+      })
+      .catch(err => {
+        console.error("Failed to fetch assignments", err);
+      });
+  }, [employeeId]);
+
+
+
+  const handleProjectChange = async (e) => {
+    const pid = e.target.value;
+    setSelectedProjectId(pid);
+    setSelectedTaskId("");
+    setAssignment(null);
+    setComment("");
+    setStatus("");
+    setAssignToId("");
+    setComments([]);
+
+    // Fetch tasks under this project assigned to current employee
+    const res = await axios.get(`/employees/${employeeId}/assignments`);
+    const tasksForProject = res.data.filter(
+      a => a.project.id === parseInt(pid)
+    ).map(a => a.task);
+
+    setProjectTasks(tasksForProject);
   };
 
-  // When project is selected
-  const handleProjectChange = (e) => {
-    const projectId = parseInt(e.target.value);
-    setSelectedProjectId(projectId);
+  const handleTaskChange = async (e) => {
+    const tid = e.target.value;
+    setSelectedTaskId(tid);
 
-    const relatedAssignments = taskAssignments.filter(a => a.project.id === projectId);
-    if (relatedAssignments.length > 0) {
-      const current = relatedAssignments[0];
-      setSelectedAssignmentId(current.id);
-      setSelectedTaskId(current.task.id);
-      setTaskStatus(current.status);
-      setAssignToId(current.employee_id);
+    // Fetch assignment
+    const res = await axios.get(`/employees/${employeeId}/assignments`);
+    const a = res.data.find(
+      a => a.project.id === parseInt(selectedProjectId) && a.task.id === parseInt(tid)
+    );
+
+    setAssignment(a);
+    setComment("");
+    setStatus(a?.status || "");
+    setAssignToId(a?.employee_id || "");
+
+    // Fetch employees in this project
+    const empRes = await axios.get(`/projects/${selectedProjectId}/employees`);
+    const currentEmp = {
+      id: employeeId,
+      first_name: user.employee.first_name,
+      last_name: user.employee.last_name
+    };
+    if (!empRes.data.find(e => e.id === currentEmp.id)) {
+      empRes.data.unshift(currentEmp);
     }
+    setEmployees(empRes.data);
+
+    // Fetch comments
+    const commentsRes = await axios.get(`/task-assignments/${a?.id}/comments`);
+    setComments(commentsRes.data);
   };
 
-  const fetchEmployees = async () => {
-    if (!selectedProjectId || !employeeId) return;
-    try {
-      const res = await axios.get(`/projects/${selectedProjectId}/employees`);
-      const data = res.data;
-
-      const currentUser = {
-        id: employeeId,
-        first_name: user.employee.first_name,
-        last_name: user.employee.last_name,
-      };
-
-      const exists = data.some(e => e.id === currentUser.id);
-      if (!exists) data.unshift(currentUser);
-
-      setEmployeeOptions(data);
-    } catch (err) {
-      console.error("Failed to fetch project employees", err);
-    }
-  };
-
-  const fetchComments = async (assignmentId) => {
-    try {
-      const res = await axios.get(`/task-assignments/${assignmentId}/comments`);
-      setComments(res.data);
-    } catch (err) {
-      console.error("Failed to fetch comments", err);
-    }
-  };
-
-  const handleUpdateTask = async () => {
-    if (!selectedAssignmentId || !taskStatus || !assignToId || !comment) {
-      Swal.fire({ icon: "error", title: "Validation", text: "All fields are required." });
+  const handleUpdate = async () => {
+    if (!assignment || !comment || !assignToId || !status) {
+      Swal.fire("Validation", "All fields are required", "warning");
       return;
     }
 
     try {
-      await axios.put(`/task-assignments/${selectedAssignmentId}`, {
-        status: taskStatus,
-        employee_id: assignToId
+      await axios.put(`/task-assignments/${assignment.id}`, {
+        employee_id: assignToId,
+        status
       });
 
       await axios.post(`/task-comments`, {
-        assignment_id: selectedAssignmentId,
+        assignment_id: assignment.id,
         comment,
-        employee_id: employeeId
+        employee_id: employeeId,
+        status,
+        assigned_to_id: assignToId
       });
 
-      Swal.fire({ icon: "success", title: "Task Updated" });
+      Swal.fire("Success", "Task updated", "success");
       setComment("");
-      fetchComments(selectedAssignmentId);
+      const updatedComments = await axios.get(`/task-assignments/${assignment.id}/comments`);
+      setComments(updatedComments.data);
     } catch (err) {
       console.error(err);
-      Swal.fire({ icon: "error", title: "Update failed", text: "Something went wrong." });
+      Swal.fire("Error", "Update failed", "error");
     }
   };
 
-  useEffect(() => {
-    fetchAssignments();
-  }, []);
-
-  useEffect(() => {
-    if (selectedAssignmentId) {
-      fetchEmployees();
-      fetchComments(selectedAssignmentId);
-    }
-  }, [selectedAssignmentId]);
-
-  const currentProject = taskAssignments.find(a => a.project.id === selectedProjectId);
-  const currentTask = taskAssignments.find(a => a.id === selectedAssignmentId)?.task;
-
-  if (!taskAssignments.length) {
-    return <p className="p-6 text-center text-red-600">No active task assigned to you.</p>;
-  }
-
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
-      {projects.length > 1 && (
+      {projects.length === 0 && (
+        <p className="text-center text-red-600">There is no task assigned to you.</p>
+      )}
+       {projects.length > 0 && (
+      <div>
+        <label className="font-medium">Project:</label>
+        <select
+          className="w-full border px-3 py-2 rounded mt-1"
+          value={selectedProjectId}
+          onChange={handleProjectChange}
+        >
+          <option value="">--- Select Project ---</option>
+          {projects.map(p => (
+            <option key={p.id} value={p.id}>{p.name}</option>
+          ))}
+        </select>
+      </div>
+       )}
+      {selectedProjectId && (
         <div>
-          <label className="font-medium">Select Project:</label>
+          <label className="font-medium">Task:</label>
           <select
-            value={selectedProjectId || ""}
-            onChange={handleProjectChange}
             className="w-full border px-3 py-2 rounded mt-1"
+            value={selectedTaskId}
+            onChange={handleTaskChange}
           >
-            <option value="" disabled>Select project</option>
-            {projects.map((p) => (
-              <option key={p.id} value={p.id}>{p.name}</option>
+            <option value="">--- Select Task ---</option>
+            {projectTasks.map(t => (
+              <option key={t.id} value={t.id}>{t.name}</option>
             ))}
           </select>
         </div>
       )}
 
-      {currentProject && (
-        <>
-          <div className="bg-gray-50 p-4 border rounded space-y-2">
-            <p><strong>Project:</strong> {currentProject.project.name}</p>
-            <p><strong>Assigned to:</strong> {user.employee.first_name} {user.employee.last_name}</p>
-            <p><strong>Start Date:</strong> {currentProject.start_date}</p>
-            <p><strong>End Date:</strong> {currentProject.end_date}</p>
+      {assignment && (
+        <div className="bg-gray-50 border rounded p-4 space-y-4">
+          <p><strong>Project:</strong> {assignment.project.name}</p>
+          <p><strong>Assigned To:</strong> {assignment.employee.first_name} {assignment.employee.last_name}</p>
+          <p><strong>Start Date:</strong> {assignment.start_date}</p>
+          <p><strong>End Date:</strong> {assignment.end_date}</p>
+          <p><strong>Task:</strong> {assignment.task.name}</p>
 
-            <label className="block mt-4 font-medium">Task</label>
-            <p className="border px-3 py-2 rounded">{currentTask?.name}</p>
-
-            <label className="block mt-4 font-medium">Comment</label>
+          <div>
+            <label className="block font-medium">Comment</label>
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               rows={3}
               className="w-full border px-3 py-2 rounded"
-            />
+            ></textarea>
+          </div>
 
-            <label className="block mt-4 font-medium">Assign To</label>
+          <div>
+            <label className="block font-medium">Assign To</label>
             <select
-              value={assignToId || ""}
-              onChange={(e) => setAssignToId(parseInt(e.target.value))}
               className="w-full border px-3 py-2 rounded"
+              value={assignToId}
+              onChange={(e) => setAssignToId(e.target.value)}
             >
-              <option value="" disabled>Select employee</option>
-              {employeeOptions.map(e => (
-                <option key={e.id} value={e.id}>
-                  {e.first_name} {e.last_name} {e.id === employeeId ? "(Me - Assigned to me)" : ""}
+              <option value="">-- Select Employee --</option>
+              {employees.map(emp => (
+                <option key={emp.id} value={emp.id}>
+                  {emp.first_name} {emp.last_name} {emp.id === employeeId ? "(Me)" : ""}
                 </option>
               ))}
             </select>
+          </div>
 
-            <label className="block mt-4 font-medium">Status</label>
+          <div>
+            <label className="block font-medium">Status</label>
             <select
-              value={taskStatus}
-              onChange={(e) => setTaskStatus(e.target.value)}
               className="w-full border px-3 py-2 rounded"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
             >
+              <option value="">-- Select Status --</option>
               <option value="New">New</option>
               <option value="In Progress">In Progress</option>
               <option value="Done">Done</option>
               <option value="Close">Close</option>
             </select>
-
-            <button
-              onClick={handleUpdateTask}
-              className="mt-4 bg-blue-600 text-white px-4 py-2 rounded"
-            >
-              Update Task
-            </button>
           </div>
 
-          <div className="mt-6 max-h-64 overflow-y-auto border rounded p-4 bg-gray-50">
+          <button
+            className="mt-4 bg-blue-600 text-white px-4 py-2 rounded"
+            onClick={handleUpdate}
+          >
+            Update Task
+          </button>
+
+          <div className="mt-6 max-h-64 overflow-y-auto border rounded p-4 bg-gray-100">
             <h2 className="text-lg font-semibold mb-2">Comment History</h2>
-            {comments.length === 0 && (
+            {comments.length === 0 ? (
               <p className="text-gray-500">No comments yet.</p>
+            ) : (
+              comments.map((c) => (
+                <div key={c.id} className="mb-2">
+                  <p className="text-sm">{c.comment}</p>
+                  <p className="text-xs text-gray-500">
+                    By {c.employee_name} on {new Date(c.timestamp).toLocaleString()}
+                  </p>
+                  {c.status && (
+                    <p className="text-xs text-gray-600">
+                      Status: {c.status}, Assigned To: {c.assigned_to}
+                    </p>
+                  )}
+                </div>
+              ))
             )}
-            {comments.map(c => (
-              <div key={c.id} className="mb-4 border-b pb-2">
-                <p className="text-sm">{c.comment}</p>
-                <p className="text-xs text-gray-600 mt-1">
-                  By {c.employee_name} on {new Date(c.timestamp).toLocaleString()}
-                </p>
-                <p className="text-xs text-gray-600">
-                  Status: {c.status || "N/A"} | Assigned To: {c.assigned_to || "N/A"}
-                </p>
-              </div>
-            ))}
           </div>
-
-        </>
+        </div>
       )}
+      
     </div>
   );
 };

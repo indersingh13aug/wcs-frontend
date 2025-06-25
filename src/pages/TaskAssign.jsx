@@ -49,16 +49,16 @@ const TaskAssign = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const { project_id, task_id, employee_id, start_date, end_date , comments} = formData;
+  e.preventDefault();
+  const { project_id, task_id, employee_id, start_date, end_date, comments } = formData;
 
-    if (!project_id || !task_id || !employee_id || !start_date || !end_date) {
-      alert('All fields are required');
-      return;
-    }
+  if (!project_id || !task_id || !employee_id || !start_date || !end_date) {
+    alert('All fields are required');
+    return;
+  }
 
-    try {
-       // Step 1: Create task assignment
+  try {
+    // Step 1: Create task assignment
     const res = await axios.post("/task-assignments", {
       project_id,
       task_id,
@@ -66,23 +66,27 @@ const TaskAssign = () => {
       start_date,
       end_date
     });
-     const assignmentId = res.data?.id;
-     
-      // Step 2: Save initial comment if present
+    const assignmentId = res.data?.id;
+
+    // Step 2: Save initial comment if present
     if (comments?.trim() && assignmentId) {
       await axios.post("/task-comments", {
         assignment_id: assignmentId,
         employee_id: employee_id,
-        comment: comments.trim()
+        comment: comments.trim(),
+        status: "New",                       // ✅ status saved as "New"
+        assigned_to_id: employee_id         // ✅ assigned_to recorded
       });
     }
-      setShowForm(false);
-      fetchAssignments();
-    } catch (err) {
-      console.error("Failed to assign task", err);
-      alert("Task assignment failed");
-    }
-  };
+
+    setShowForm(false);
+    fetchAssignments();
+  } catch (err) {
+    console.error("Failed to assign task", err);
+    alert("Task assignment failed");
+  }
+};
+
 
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-6">
