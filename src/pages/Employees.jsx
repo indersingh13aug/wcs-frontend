@@ -53,6 +53,7 @@ const Employees = () => {
       {showForm && <EmployeeForm onSubmit={handleAddEmployee} onCancel={() => setShowForm(false)} />}
 
       <div className="overflow-x-auto mt-6">
+        {!showForm && (
         <table className="min-w-full bg-white rounded-xl shadow">
           <thead className="bg-gray-100">
             <tr>
@@ -79,9 +80,11 @@ const Employees = () => {
             ))}
           </tbody>
         </table>
+        )}
       </div>
 
       {/* Pagination Controls */}
+      {!showForm && (
       <div className="flex justify-center items-center mt-4 gap-4">
         <button
           onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
@@ -99,6 +102,7 @@ const Employees = () => {
           Next
         </button>
       </div>
+      )}
     </div>
   );
 };

@@ -71,7 +71,7 @@ const GSTItems = () => {
           onCancel={handleCancel}
         />
       )}
-
+     {!showForm && (
       <table className="w-full border text-sm mt-4">
         <thead className="bg-gray-100">
           <tr>
@@ -115,6 +115,7 @@ const GSTItems = () => {
           ))}
         </tbody>
       </table>
+          )}
     </div>
   );
 };

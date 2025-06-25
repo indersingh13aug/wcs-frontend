@@ -22,6 +22,7 @@ const Payroll = () => {
       <h2 className="text-2xl font-bold mb-4">Payroll Records</h2>
 
       <div className="overflow-x-auto">
+        {!showForm && (
         <table className="min-w-full bg-white rounded-xl shadow">
           <thead className="bg-gray-100">
             <tr>
@@ -58,6 +59,7 @@ const Payroll = () => {
             )}
           </tbody>
         </table>
+        )}
       </div>
     </div>
   );

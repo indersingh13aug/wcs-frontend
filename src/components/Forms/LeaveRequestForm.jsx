@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../../services/axios';
-
+import Swal from 'sweetalert2';
 const LeaveRequestForm = ({ onSubmit, onCancel }) => {
   const [leaveTypes, setLeaveTypes] = useState([]);
   const [form, setForm] = useState({
@@ -25,7 +25,7 @@ const LeaveRequestForm = ({ onSubmit, onCancel }) => {
     e.preventDefault();
     const { start_date, end_date, leave_type_id, reason } = form;
     if (!start_date || !end_date || !leave_type_id || !reason) {
-      alert('All fields are required');
+      Swal.fire({icon: 'warning',title: 'Warning',text: 'All fields are required',});
       return;
     }
     onSubmit(form);

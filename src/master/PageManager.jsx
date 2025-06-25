@@ -105,7 +105,7 @@ const PageManager = () => {
           onCancel={() => setShowForm(false)}
         />
       )}
-
+    {!showForm && (
       <table className="w-full border mt-6 text-sm">
         <thead className="bg-gray-100">
           <tr>
@@ -149,6 +149,7 @@ const PageManager = () => {
           ))}
         </tbody>
       </table>
+        )}
     </div>
   );
 };

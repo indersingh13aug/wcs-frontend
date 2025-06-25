@@ -86,7 +86,7 @@ const Services = () => {
           onCancel={() => setShowForm(false)}
         />
       )}
-
+{!showForm && (
       <table className="w-full border mt-4 text-sm">
         <thead className="bg-gray-100">
           <tr>
@@ -122,6 +122,7 @@ const Services = () => {
           ))}
         </tbody>
       </table>
+)}
     </div>
   );
 };

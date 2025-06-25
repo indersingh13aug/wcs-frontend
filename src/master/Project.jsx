@@ -108,7 +108,7 @@ const Project = () => {
           onSubmit={handleSubmit}
         />
       )}
-
+      {!showForm && (
       <table className="w-full border mt-6 text-sm">
         <thead className="bg-gray-100">
           <tr>
@@ -170,6 +170,7 @@ const Project = () => {
           ))}
         </tbody>
       </table>
+      )}
     </div>
   );
 };

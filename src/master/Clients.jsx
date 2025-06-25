@@ -70,11 +70,7 @@ const Client = () => {
     } catch (err) {
       const message =
         err.response?.data?.detail || "An unexpected error occurred.";
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: message,
-      });
+      Swal.fire({icon: 'error',title: 'Error',text: message,});
       console.error('Save failed', err);
     }
   };
@@ -157,7 +153,7 @@ const Client = () => {
           states={states}
         />
       )}
-
+  {!showForm && (
       <table className="w-full border mt-6 text-sm">
         <thead className="bg-gray-100">
           <tr>
@@ -216,6 +212,7 @@ const Client = () => {
           ))}
         </tbody>
       </table>
+      )}
     </div>
   );
 };

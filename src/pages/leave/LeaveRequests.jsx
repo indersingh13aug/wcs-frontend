@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from '../../services/axios';
 import LeaveRequestForm from '../../components/Forms/LeaveRequestForm';
 import { useAuth } from '../../context/AuthContext';
-
+import Swal from 'sweetalert2';
 const LeaveRequest = () => {
   const { user } = useAuth();
   const employeeId = user?.employee?.id;
@@ -47,7 +47,7 @@ const LeaveRequest = () => {
       fetchLeaves();
       fetchSummary();
     } catch (err) {
-      alert('Failed to apply leave');
+      Swal.fire({icon: 'error',title: 'Error',text: 'Failed to apply leave',});
     }
   };
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../services/axios';
 import { useAuth } from '../context/AuthContext';
-
+import Swal from 'sweetalert2';
 const Profile = () => {
   const [activeTab, setActiveTab] = useState('profile');  // 'profile' | 'password'
   const [profile, setProfile] = useState(null);
@@ -20,7 +20,6 @@ const Profile = () => {
       try {
         const res = await axios.get(`/employees/${employeeId}`);
         setProfile(res.data);
-        // alert(res.data);
       } catch (err) {
         console.error('Failed to fetch profile:', err);
       } finally {
@@ -39,25 +38,27 @@ const Profile = () => {
   const handleUpdate = async () => {
     try {
       await axios.put(`/employees/${employeeId}`, profile);
-      alert('Profile updated');
+      Swal.fire({icon: 'success',title: 'Profile update',text: 'Profile updated!',});
       setEditing(false);
     } catch (err) {
       console.error(err);
-      alert('Update failed');
+      Swal.fire({icon: 'error',title: 'Error',text: 'Update failed',});
     }
   };
 
   const handlePasswordChange = async () => {
     if (passwords.new !== passwords.confirm) {
-      return alert('Passwords do not match');
+      Swal.fire({icon: 'error',title: 'Error',text: 'Passwords do not match',});
+      return;
     }
     try {
       await axios.post(`/employees/${employeeId}/change-password`, passwords);
-      alert('Password updated');
+      
+      Swal.fire({icon: 'success',title: 'Password update',text: 'Password updated!',});
       setPasswords({ current: '', new: '', confirm: '' });
     } catch (err) {
       console.error(err);
-      alert('Password update failed');
+      Swal.fire({icon: 'error',title: 'Error',text: 'Password update failed',});
     }
   };
 
@@ -73,10 +74,10 @@ const Profile = () => {
     formData.append('image', imageFile);
     try {
       await axios.post(`/employees/${employeeId}/upload-image`, formData);
-      alert('Image uploaded');
+      Swal.fire({icon: 'success',title: 'Upload Image',text: 'Image uploaded!',});
     } catch (err) {
       console.error(err);
-      alert('Upload failed');
+      Swal.fire({icon: 'error',title: 'Error',text: 'Upload failed',});
     }
   };
 

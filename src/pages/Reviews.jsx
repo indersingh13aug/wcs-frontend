@@ -22,6 +22,7 @@ const PerformanceReviews = () => {
       <h2 className="text-2xl font-bold mb-4">Performance Reviews</h2>
 
       <div className="overflow-x-auto">
+        {!showForm && (
         <table className="min-w-full bg-white rounded-xl shadow">
           <thead className="bg-gray-100">
             <tr>
@@ -54,6 +55,7 @@ const PerformanceReviews = () => {
             )}
           </tbody>
         </table>
+        )}
       </div>
     </div>
   );

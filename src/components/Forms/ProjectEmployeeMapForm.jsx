@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../../services/axios';
-
-const ProjectEmployeeMapForm = ({ onClose }) => {
+import Swal from 'sweetalert2';
+const ProjectEmployeeMapForm = ({ onClose, editData }) => {
   const [projects, setProjects] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [form, setForm] = useState({
@@ -11,6 +11,44 @@ const ProjectEmployeeMapForm = ({ onClose }) => {
     to_date: '',
     remarks: ''
   });
+  const formatDateForInput = (dateStr) => {
+    if (!dateStr) return '';
+    const [dd, mm, yyyy] = dateStr.includes('-') && dateStr.split('-').length === 3 && dateStr[2] === '-' ? dateStr.split('-') : [null];
+    if (!dd) return dateStr; // already in yyyy-mm-dd
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [projectRes, empRes] = await Promise.all([
+          axios.get('/projects'),
+          axios.get('/employees')
+        ]);
+
+        setProjects(projectRes.data || []);
+        setEmployees(empRes.data || []);
+      } catch (error) {
+        console.error('Error fetching dropdown data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // 🟨 Pre-fill form when editing
+  useEffect(() => {
+    if (editData) {
+      setForm({
+        project_id: editData.project.id,
+        employee_ids: editData.employees.map(e => e.id),
+        from_date: formatDateForInput(editData.from_date),
+        to_date: formatDateForInput(editData.to_date),
+        remarks: editData.remarks
+      });
+    }
+  }, [editData]);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,18 +85,27 @@ const ProjectEmployeeMapForm = ({ onClose }) => {
     e.preventDefault();
 
     if (!form.project_id || form.employee_ids.length === 0 || !form.from_date || !form.to_date) {
-      alert('All fields are required');
+      Swal.fire({ icon: 'warning', title: 'Warning', text: 'All fields are required', });
       return;
     }
 
     try {
-      await axios.post('/project-employee-maps', form);
+      if (editData) {
+        await axios.put(`/project-employee-maps/${editData.id}`, form);
+      } else {
+        await axios.post('/project-employee-maps', form);
+      }
       onClose();
     } catch (err) {
       console.error('Submission failed:', err);
-      alert('Error saving project mapping');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Error saving project mapping',
+      });
     }
   };
+
 
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow space-y-4">

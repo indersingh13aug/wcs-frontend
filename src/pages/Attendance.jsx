@@ -24,6 +24,7 @@ const Attendance = () => {
       <h2 className="text-2xl font-bold mb-4">Attendance Records</h2>
 
       <div className="overflow-x-auto">
+        {!showForm && (
         <table className="min-w-full bg-white rounded-xl shadow">
           <thead className="bg-gray-100">
             <tr>
@@ -54,6 +55,7 @@ const Attendance = () => {
             )}
           </tbody>
         </table>
+        )}
       </div>
     </div>
   );

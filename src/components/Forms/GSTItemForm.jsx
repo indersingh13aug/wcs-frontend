@@ -84,11 +84,10 @@ const GSTItemForm = ({ formData, setFormData, onSubmit, onCancel }) => {
         </div>
       </div>
 
-      <div className="flex justify-end gap-2">
+       <div className="flex gap-3">
+    <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">{formData.id ? "Update" : "Save"}</button>
         <button type="button" onClick={onCancel} className="bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-          {formData.id ? "Update" : "Save"}
-        </button>
+ 
       </div>
     </form>
   );
