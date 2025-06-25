@@ -25,6 +25,7 @@ import Tasks from './master/Tasks';
 import TaskAssign from './pages/TaskAssign';
 import LeaveWorklist from './pages/leave/LeaveWorklist';
 import ProjectEmployeeMap from './pages/ProjectEmployeeMap';
+import ProjectDetails from './pages/ProjectDetails';
 
 function App() {
   return (
@@ -113,6 +114,15 @@ function App() {
             </ProtectedRoute>
           }
         />
+         <Route
+          path="projectdetails"
+          element={
+            <ProtectedRoute>
+              <ProjectDetails />
+            </ProtectedRoute>
+          }
+        />
+        
         
         <Route
           path="roleusermap"

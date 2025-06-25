@@ -50,7 +50,7 @@ const TaskAssign = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { project_id, task_id, employee_id, start_date, end_date } = formData;
+    const { project_id, task_id, employee_id, start_date, end_date , comments} = formData;
 
     if (!project_id || !task_id || !employee_id || !start_date || !end_date) {
       alert('All fields are required');
@@ -58,7 +58,26 @@ const TaskAssign = () => {
     }
 
     try {
-      await axios.post("/task-assignments", formData);
+       // Step 1: Create task assignment
+    const res = await axios.post("/task-assignments", {
+      project_id,
+      task_id,
+      employee_id,
+      start_date,
+      end_date
+    });
+     const assignmentId = res.data?.id;
+     
+      // Step 2: Save initial comment if present
+    if (comments?.trim() && assignmentId) {
+      alert('hrere')
+      await axios.post("/task-comments", {
+        assignment_id: assignmentId,
+        employee_id: employee_id,
+        comment: comments.trim()
+      });
+      alert('hrerer')
+    }
       setShowForm(false);
       fetchAssignments();
     } catch (err) {
