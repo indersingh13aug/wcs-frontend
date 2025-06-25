@@ -18,18 +18,25 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const login = async (userData) => {
-    localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
 
-    try {
-      const res = await axios.get(`/admin/accessible?role_id=${userData.employee.role_id}`);
-      setAccessiblePages(res.data);
-      localStorage.setItem('pages', JSON.stringify(res.data));
-    } catch (error) {
-      console.error('Failed to fetch accessible pages', error);
-    }
-  };
+const login = async (userData) => {
+  // ✅ Save tokens in localStorage
+  localStorage.setItem('access_token', userData.access_token);
+  localStorage.setItem('refresh_token', userData.refresh_token);
+
+  // ✅ Save user info
+  localStorage.setItem('user', JSON.stringify(userData));
+  setUser(userData);
+
+  try {
+    const res = await axios.get(`/admin/accessible?role_id=${userData.employee.role_id}`);
+    setAccessiblePages(res.data);
+    localStorage.setItem('pages', JSON.stringify(res.data));
+  } catch (error) {
+    console.error('Failed to fetch accessible pages', error);
+  }
+};
+
 
   const logout = () => {
     localStorage.removeItem('user');

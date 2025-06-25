@@ -14,7 +14,7 @@ const ProjectEmployeeMapForm = ({ onClose, editData }) => {
   const formatDateForInput = (dateStr) => {
     if (!dateStr) return '';
     const [dd, mm, yyyy] = dateStr.includes('-') && dateStr.split('-').length === 3 && dateStr[2] === '-' ? dateStr.split('-') : [null];
-    if (!dd) return dateStr; // already in yyyy-mm-dd
+    if (!dd) return dateStr; 
     return `${yyyy}-${mm}-${dd}`;
   };
 

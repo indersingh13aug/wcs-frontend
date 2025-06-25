@@ -26,7 +26,8 @@ import TaskAssign from './pages/TaskAssign';
 import LeaveWorklist from './pages/leave/LeaveWorklist';
 import ProjectEmployeeMap from './pages/ProjectEmployeeMap';
 import ProjectDetails from './pages/ProjectDetails';
-
+import ChangePassword from './pages/ChangePassword';
+import ChangeUserName from './pages/ChangeUserName';
 function App() {
   return (
     <Routes>
@@ -122,8 +123,22 @@ function App() {
             </ProtectedRoute>
           }
         />
-        
-        
+                 <Route
+          path="changepassword"
+          element={
+            <ProtectedRoute>
+              <ChangePassword />
+            </ProtectedRoute>
+          }
+        />
+              <Route
+          path="changeusername"
+          element={
+            <ProtectedRoute>
+              <ChangeUserName />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="roleusermap"
           element={
