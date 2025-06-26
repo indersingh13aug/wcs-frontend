@@ -28,6 +28,7 @@ import ProjectEmployeeMap from './pages/ProjectEmployeeMap';
 import ProjectDetails from './pages/ProjectDetails';
 import ChangePassword from './pages/ChangePassword';
 import ChangeUserName from './pages/ChangeUserName';
+import SaveInvoice from './pages/SaveInvoice';
 function App() {
   return (
     <Routes>
@@ -200,6 +201,14 @@ function App() {
           element={
             <ProtectedRoute>
               <GSTInvoicePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="saveinvoice"
+          element={
+            <ProtectedRoute>
+              <SaveInvoice />
             </ProtectedRoute>
           }
         />
