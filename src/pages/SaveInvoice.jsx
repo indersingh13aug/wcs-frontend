@@ -373,7 +373,7 @@ const SaveInvoice = () => {
                       ))}
                       {/* Summary row */}
                       <tr className="bg-gray-100 font-semibold text-center">
-                        <td className="border p-1 text-right" colSpan={5}>Invoice Totals:</td>
+                        <td className="border p-1 text-right" colSpan={6}>Invoice Totals:</td>
                         <td className="border p-1">{cgstTotal.toFixed(2)}</td>
                         <td className="border p-1"></td>
                         <td className="border p-1">{sgstTotal.toFixed(2)}</td>
