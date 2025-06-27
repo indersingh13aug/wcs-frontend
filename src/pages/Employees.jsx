@@ -96,13 +96,20 @@ const Employees = () => {
                   <td className="px-4 py-2">{emp.department?.name || `#${emp.department_id}`}</td>
                   <td>{emp.role?.name || "No Role Assigned"}</td>
                   <td className="px-4 py-2">
-                    <span className={`px-2 py-1 text-sm rounded font-medium ${emp.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                      {emp.status}
-                    </span>
+                    <span
+                  className={`px-2 py-1 rounded text-sm ${
+                    emp.status
+                      ? "bg-green-100 text-green-600"
+                      : "bg-red-100 text-red-600"
+                  }`}
+                >
+                  {emp.status ? "Active" : "Inactive"}
+                </span>
+                      
                   </td>
                   <td className="px-4 py-2">
                     <button
-                      className="text-blue-600 hover:underline"
+                      className={`px-2 py-1 rounded ${emp.is_deleted ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-blue-500 text-white'}`}
                       onClick={() => handleEdit(emp)}
                     >
                       Edit

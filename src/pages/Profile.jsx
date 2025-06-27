@@ -111,12 +111,12 @@ const personal = () => {
 
                   <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
                 </label>
-                <button
+                {/* <button
                   onClick={handleImageUpload}
                   className="mt-2 text-sm bg-blue-600 text-white px-3 py-1 rounded"
                 >
                   Upload
-                </button>
+                </button> */}
               </div>
 
               {/* personal Details */}

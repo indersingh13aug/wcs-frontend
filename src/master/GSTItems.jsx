@@ -106,7 +106,7 @@ const GSTItems = () => {
               <td className="border p-2">
                 <button
                   onClick={() => handleEdit(item)}
-                  className="bg-yellow-500 text-white px-2 py-1 rounded"
+                  className={`px-2 py-1 rounded ${item.is_deleted ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-blue-500 text-white'}`}
                 >
                   Edit
                 </button>
